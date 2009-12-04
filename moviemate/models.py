@@ -71,7 +71,7 @@ class Genre(models.Model):
 
 class Likesgenre(models.Model):
         user_id = models.IntegerField(primary_key=True)
-        genre = models.IntegerField()
+        genre = models.IntegerField(primary_key=True)
         class Meta:
                 db_table = u'LikesGenre'
 		
@@ -80,7 +80,7 @@ class Likesgenre(models.Model):
 
 class Likesmovie(models.Model):
         user_id = models.IntegerField(primary_key=True)
-        mid = models.IntegerField()
+        mid = models.IntegerField(primary_key=True)
         class Meta:
                 db_table = u'LikesMovie'
         
@@ -187,7 +187,7 @@ class Users(models.Model):
 
 class Choosetype(models.Model):
         fmid = models.IntegerField(primary_key=True)
-        genre = models.IntegerField()
+        genre = models.IntegerField(primary_key=True)
         class Meta:
                 db_table = u'chooseType'
 		
@@ -195,8 +195,8 @@ class Choosetype(models.Model):
 		return u'[%s] is [%s]' % (self.fmid, self.genre)
 
 class Createfmovie(models.Model):
-        user_id = models.IntegerField(unique=True)
-        fmid = models.IntegerField(unique=True)
+        user_id = models.IntegerField(unique=True, primary_key=True)
+        fmid = models.IntegerField(unique=True, primary_key=True)
         tmstamp = models.DateTimeField(unique=True)
         class Meta:
                 db_table = u'createFMovie'
@@ -218,13 +218,15 @@ class Hasupdate(models.Model):
 
 class Hirescast(models.Model):
         fmid = models.IntegerField(primary_key=True)
-        pid = models.IntegerField()
+        pid = models.IntegerField(primary_key=True)
         salery = models.FloatField(null=True, blank=True)
         class Meta:
                 db_table = u'hiresCast'
 		
 	def __unicode__(self):
-		return u'[%s] hired [%s]' % (self.pid, sel.fmid)
+		return u'[%s] hired [%s]' % (self.pid, self.fmid)
+
+
 
 class Hiresdirect(models.Model):
         fmid = models.IntegerField(primary_key=True)
@@ -238,7 +240,7 @@ class Hiresdirect(models.Model):
 
 class Isfriend(models.Model):
         uid1 = models.IntegerField(primary_key=True)
-        uid2 = models.IntegerField()
+        uid2 = models.IntegerField(primary_key=True)
         class Meta:
                 db_table = u'isFriend'
 		
@@ -247,7 +249,7 @@ class Isfriend(models.Model):
 
 class Isinvolved(models.Model):
         pid = models.IntegerField(primary_key=True)
-        mid = models.IntegerField()
+        mid = models.IntegerField(max_length=10, primary_key=True)
         role = models.CharField(max_length=24, primary_key=True)
         class Meta:
                 db_table = u'isInvolved'
@@ -257,7 +259,7 @@ class Isinvolved(models.Model):
 
 class Istype(models.Model):
         mid = models.IntegerField(primary_key=True)
-        gid = models.IntegerField()
+        gid = models.IntegerField(primary_key=True)
         class Meta:
                 db_table = u'isType'
 		
