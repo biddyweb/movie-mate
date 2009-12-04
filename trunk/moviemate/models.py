@@ -12,7 +12,7 @@ from django.contrib import admin
 
 class Advertisement(models.Model):
         ad_id = models.IntegerField(primary_key=True)
-        product = models.CharField(unique=True, max_length=765, blank=True)
+        product = models.CharField(unique=True, max_length=255, blank=True)
         imgurl = models.CharField(max_length=765, db_column='imgURL', blank=True) # Field name made lowercase.
         refurl = models.CharField(max_length=765, db_column='refURL', blank=True) # Field name made lowercase.
         country = models.CharField(max_length=120, blank=True)
@@ -99,7 +99,7 @@ class Likesperson(models.Model):
 
 class Movie(models.Model):
         mid = models.IntegerField(unique=True)
-        name = models.CharField(max_length=765, primary_key=True)
+        name = models.CharField(max_length=255, primary_key=True)
         year = models.CharField(max_length=27, primary_key=True)
         avgrating = models.FloatField(null=True, db_column='avgRating', blank=True) # Field name made lowercase.
         numofratings = models.IntegerField(null=True, db_column='numOfRatings', blank=True) # Field name made lowercase.
@@ -113,7 +113,7 @@ class Movie(models.Model):
 
 class Person(models.Model):
         pid = models.IntegerField(unique=True)
-        name = models.CharField(max_length=300, primary_key=True)
+        name = models.CharField(max_length=255, primary_key=True)
         age = models.IntegerField(null=True, blank=True)
         gender = models.CharField(max_length=3, primary_key=True)
         class Meta:
@@ -167,8 +167,8 @@ class Updates(models.Model):
 class Users(models.Model):
         user_id = models.IntegerField(unique=True)
         isadmin = models.IntegerField(null=True, db_column='isAdmin', blank=True) # Field name made lowercase.
-        login = models.CharField(max_length=765, primary_key=True)
-        psword = models.CharField(max_length=765, blank=True)
+        login = models.CharField(max_length=255, primary_key=True)
+        psword = models.CharField(max_length=255, blank=True)
         name = models.CharField(max_length=765, blank=True)
         age = models.IntegerField(null=True, blank=True)
         country = models.CharField(max_length=765, blank=True)
