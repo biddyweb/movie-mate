@@ -9,12 +9,29 @@ ADMINS = (
 
 MANAGERS = ADMINS
 
+#Discosoup's local database connection
 DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
 DATABASE_NAME = 'moviemate2'             # Or path to database file if using sqlite3.
 DATABASE_USER = 'cs320dev'             # Not used with sqlite3.
 DATABASE_PASSWORD = 'mysqlsux'         # Not used with sqlite3.
 DATABASE_HOST = '/tmp/mysql.sock'             # Set to empty string for localhost. Not used with sqlite3.
 DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
+
+#DiscoSoup's edlab database connection
+#DATABASE_ENGINE = 'mysql'
+#DATABASE_NAME = 'cs445_2_f09'
+#DATABASE_USER = 'cs445_2_f09'
+#DATABASE_PASSWORD = 'gwalter'
+#DATABASE_HOST = '127.0.0.1'
+#DATABASE_PORT = '8000'
+
+#Greg's Local
+#DATABASE_ENGINE = 'mysql'           # 'postgresql_psycopg2', 'postgresql', 'mysql', 'sqlite3' or 'oracle'.
+#DATABASE_NAME = 'moviemate'             # Or path to database file if using sqlite3.
+#DATABASE_USER = 'admin'             # Not used with sqlite3.
+#DATABASE_PASSWORD = 'mysqlsux'         # Not used with sqlite3.
+#DATABASE_HOST = '/var/run/mysqld/mysqld.sock'             # Set to empty string for localhost. Not used with sqlite3.
+#DATABASE_PORT = ''             # Set to empty string for default. Not used with sqlite3.
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
