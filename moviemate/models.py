@@ -226,7 +226,9 @@ class Hirescast(models.Model):
 	def __unicode__(self):
 		return u'[%s] hired [%s]' % (self.pid, self.fmid)
 
-
+class HirescastAdmin(admin.ModelAdmin):
+	list_display = ('fmid', 'pid', 'salery')
+	list_display_links = ('fmid', 'pid')
 
 class Hiresdirect(models.Model):
         fmid = models.IntegerField(primary_key=True)
@@ -304,7 +306,8 @@ admin.site.register(Users)
 admin.site.register(Choosetype)
 admin.site.register(Createfmovie)
 admin.site.register(Hasupdate)
-admin.site.register(Hirescast)
+admin.site.register(Hirescast, HirescastAdmin)
+
 admin.site.register(Hiresdirect)
 admin.site.register(Isfriend)
 admin.site.register(Isinvolved)
