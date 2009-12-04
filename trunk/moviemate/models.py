@@ -13,8 +13,8 @@ from django.contrib import admin
 class Advertisement(models.Model):
         ad_id = models.IntegerField(primary_key=True)
         product = models.CharField(unique=True, max_length=255, blank=True)
-        imgurl = models.CharField(max_length=765, db_column='imgURL', blank=True) # Field name made lowercase.
-        refurl = models.CharField(max_length=765, db_column='refURL', blank=True) # Field name made lowercase.
+        imgurl = models.CharField(max_length=255, db_column='imgURL', blank=True) # Field name made lowercase.
+        refurl = models.CharField(max_length=255, db_column='refURL', blank=True) # Field name made lowercase.
         country = models.CharField(max_length=120, blank=True)
         state = models.CharField(max_length=60, blank=True)
         city = models.CharField(max_length=120, blank=True)
@@ -169,13 +169,13 @@ class Users(models.Model):
         isadmin = models.IntegerField(null=True, db_column='isAdmin', blank=True) # Field name made lowercase.
         login = models.CharField(max_length=255, primary_key=True)
         psword = models.CharField(max_length=255, blank=True)
-        name = models.CharField(max_length=765, blank=True)
+        name = models.CharField(max_length=255, blank=True)
         age = models.IntegerField(null=True, blank=True)
-        country = models.CharField(max_length=765, blank=True)
-        state = models.CharField(max_length=765, blank=True)
-        city = models.CharField(max_length=765, blank=True)
+        country = models.CharField(max_length=255, blank=True)
+        state = models.CharField(max_length=255, blank=True)
+        city = models.CharField(max_length=255, blank=True)
         gender = models.CharField(max_length=3, blank=True)
-        school = models.CharField(max_length=765, blank=True)
+        school = models.CharField(max_length=255, blank=True)
         fantasybudget = models.FloatField(null=True, db_column='fantasyBudget', blank=True) # Field name made lowercase.
         class Meta:
                 db_table = u'Users'
