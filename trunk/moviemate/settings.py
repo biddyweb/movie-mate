@@ -3,6 +3,9 @@
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
+import os
+APP_PATH = os.path.realpath(os.path.dirname(__file__))
+
 ADMINS = (
     # ('Your Name', 'your_email@domain.com'),
 )
@@ -65,16 +68,29 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.auth.middleware.AuthenticationMiddleware',
 )
 
+TEMPLATE_CONTEXT_PROCESSORS = (
+    "django.core.context_processors.auth",
+    "django.core.context_processors.debug",
+    "django.core.context_processors.i18n",
+    "django.core.context_processors.media",
+    "django.core.context_processors.request",
+)
+
 ROOT_URLCONF = 'moviemate.urls'
+LOGIN_REDIRECT_URL = '/templates/home/'
+LOGIN_URL = '/templates/login/'
+LOGOUT_URL = '/templates/logout/'
 
 TEMPLATE_DIRS = (
     # Put strings here, like "/home/html/django_templates" or "C:/www/django/templates".
     # Always use forward slashes, even on Windows.
     # Don't forget to use absolute paths, not relative paths.
+    APP_PATH + '/templates/',
 )
 
 INSTALLED_APPS = (
     'moviemate',
+    'moviemate.urlsMap',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
