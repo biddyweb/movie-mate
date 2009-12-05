@@ -71,7 +71,7 @@ class Genre(models.Model):
 
 class Likesgenre(models.Model):
         user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
-        genre = models.ForeignKey('Genre', to_field='gid', primary_key=True, db_column='gid')
+        genre = models.ForeignKey('Genre', to_field='gid', primary_key=True, db_column='genre')
         class Meta:
                 db_table = u'LikesGenre'
 		
@@ -184,10 +184,9 @@ class Users(models.Model):
                 return u"%s, <%s>" % (self.name, self.login)
 
 
-
 class Choosetype(models.Model):
         fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')
-        genre = models.ForeignKey('Genre', to_field='gid', primary_key=True, db_column='gid')
+        genre = models.ForeignKey('Genre', to_field='gid', primary_key=True, db_column='genre')
         class Meta:
                 db_table = u'chooseType'
 		
