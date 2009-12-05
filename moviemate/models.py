@@ -235,8 +235,8 @@ class Hiresdirect(models.Model):
 		return u'[%s] hired [%s]' % (self.pid, self.mid)
 
 class Isfriend(models.Model):
-        uid1 = models.ForeignKey('Users', to_field='user_id', unique=True, db_column='user_id', related_name='uid1')
-        uid2 = models.ForeignKey('Users', to_field='user_id', unique=True, db_column='user_id', related_name='uid2')
+        uid1 = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='uid1', related_name='uid1')
+        uid2 = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='uid1', related_name='uid2')
         class Meta:
                 db_table = u'isFriend'
 		
