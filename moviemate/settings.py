@@ -88,9 +88,17 @@ TEMPLATE_DIRS = (
     APP_PATH + '/templates/',
 )
 
+AUTHENTICATION_BACKENDS = (
+    "moviemate.authentication.AuthenticationBackend",
+    #"django.contrib.auth.backends.ModelBackend",
+)
+CUSTOM_USER_MODEL = 'moviemate.models.Users'
+
 INSTALLED_APPS = (
     'moviemate',
     'moviemate.urlsMap',
+    'moviemate.models',
+    'moviemate.authentication',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
