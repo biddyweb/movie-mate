@@ -217,18 +217,15 @@ class Hasupdate(models.Model):
 		return u'[%s] updated [%s] on [%s] at [%s]' % (self.user_id, self.action, self.entity, self.tmstamp)
 
 class Hirescast(models.Model):
-        fmid = models.IntegerField(primary_key=True)
-        pid = models.IntegerField(primary_key=True)
+        fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')
+        pid = models.ForeignKey('Person', to_field='pid', primary_key=True, db_column='pid')
         salery = models.FloatField(null=True, blank=True)
         class Meta:
                 db_table = u'hiresCast'
 		
 	def __unicode__(self):
 		return u'[%s] hired [%s]' % (self.pid, self.fmid)
-
-class HirescastAdmin(admin.ModelAdmin):
-	list_display = ('fmid', 'pid', 'salery')
-	list_display_links = ('fmid', 'pid')
+		
 
 class Hiresdirect(models.Model):
         fmid = models.IntegerField(primary_key=True)
@@ -306,7 +303,7 @@ admin.site.register(Users)
 admin.site.register(Choosetype)
 admin.site.register(Createfmovie)
 admin.site.register(Hasupdate)
-admin.site.register(Hirescast, HirescastAdmin)
+admin.site.register(Hirescast)
 
 admin.site.register(Hiresdirect)
 admin.site.register(Isfriend)
