@@ -70,8 +70,8 @@ class Genre(models.Model):
 		return u'%s' % self.genre
 
 class Likesgenre(models.Model):
-        user_id = models.IntegerField(primary_key=True)
-        genre = models.IntegerField(primary_key=True)
+        user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
+        genre = models.ForeignKey('Genre', to_field='gid', primary_key=True, db_column='gid')
         class Meta:
                 db_table = u'LikesGenre'
 		
@@ -79,8 +79,8 @@ class Likesgenre(models.Model):
 		return u"[%s] likes [%s]" % (self.user_id, self.genre)
 
 class Likesmovie(models.Model):
-        user_id = models.IntegerField(primary_key=True)
-        mid = models.IntegerField(primary_key=True)
+        user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
+        mid = models.ForeignKey('Movie', to_field='mid', primary_key=True, db_column='mid')
         class Meta:
                 db_table = u'LikesMovie'
         
@@ -89,8 +89,8 @@ class Likesmovie(models.Model):
 
 
 class Likesperson(models.Model):
-        user_id = models.IntegerField(primary_key=True)
-        pid = models.IntegerField()
+        user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
+        pid = models.ForeignKey('Person', to_field='pid', primary_key=True, db_column='pid')
         class Meta:
                 db_table = u'LikesPerson'
 		
@@ -123,8 +123,8 @@ class Person(models.Model):
 		return u'%s' % self.name
 
 class Rates(models.Model):
-        user_id = models.IntegerField(primary_key=True)
-        mid = models.IntegerField()
+        user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
+        mid = models.ForeignKey('Movie', to_field='mid', primary_key=True, db_column='mid')
         rating = models.IntegerField(null=True, blank=True)
         class Meta:
                 db_table = u'Rates'
@@ -133,8 +133,8 @@ class Rates(models.Model):
 		return u'[%s] rated [%s] a [%s]' % (self.user_id, self.mid, self.rating)
 
 class Ratesfmovie(models.Model):
-        user_id = models.IntegerField(primary_key=True)
-        fmid = models.IntegerField()
+        user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
+        fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')
         rating = models.IntegerField(null=True, blank=True)
         class Meta:
                 db_table = u'RatesFMovie'
@@ -144,8 +144,8 @@ class Ratesfmovie(models.Model):
 
 class Review(models.Model):
         review_id = models.IntegerField(primary_key=True)
-        user_id = models.IntegerField(null=True, blank=True)
-        mid = models.IntegerField(null=True, blank=True)
+        user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
+        mid = models.ForeignKey('Movie', to_field='mid', primary_key=True, db_column='mid')
         summary = models.TextField(blank=True)
         class Meta:
                 db_table = u'Review'
@@ -186,8 +186,8 @@ class Users(models.Model):
 
 
 class Choosetype(models.Model):
-        fmid = models.IntegerField(primary_key=True)
-        genre = models.IntegerField(primary_key=True)
+        fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')
+        genre = models.ForeignKey('Genre', to_field='gid', primary_key=True, db_column='gid')
         class Meta:
                 db_table = u'chooseType'
 		
@@ -195,8 +195,8 @@ class Choosetype(models.Model):
 		return u'[%s] is [%s]' % (self.fmid, self.genre)
 
 class Createfmovie(models.Model):
-        user_id = models.IntegerField(unique=True, primary_key=True)
-        fmid = models.IntegerField(unique=True, primary_key=True)
+        user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
+        fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')
         tmstamp = models.DateTimeField(unique=True)
         class Meta:
                 db_table = u'createFMovie'
@@ -205,16 +205,13 @@ class Createfmovie(models.Model):
 		return u'[%s] created [%s] at [%s]' % (self.user_id, self.fmid, self.tmstamp)
 
 class Hasupdate(models.Model):
-        user_id = models.IntegerField(unique=True, null=True, blank=True)
-        up_id = models.IntegerField(primary_key=True)
-        entity = models.CharField(unique=True, max_length=60, blank=True)
-        action = models.CharField(unique=True, max_length=42, blank=True)
-        tmstamp = models.DateTimeField()
+        user_id = models.ForeignKey('Users', to_field='user_id', unique=True, db_column='user_id')
+        up_id = models.ForeignKey('Updates', to_field='up_id', primary_key=True, db_column='up_id')
         class Meta:
                 db_table = u'hasUpdate'
 		
 	def __unicode__(self):
-		return u'[%s] updated [%s] on [%s] at [%s]' % (self.user_id, self.action, self.entity, self.tmstamp)
+		return u'[%s] has update [%s]' % (self.user_id, self.up_id)
 
 class Hirescast(models.Model):
         fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')
@@ -228,8 +225,8 @@ class Hirescast(models.Model):
 		
 
 class Hiresdirect(models.Model):
-        fmid = models.IntegerField(primary_key=True)
-        pid = models.IntegerField(null=True, blank=True)
+        fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')
+        pid = models.ForeignKey('Person', to_field='pid', primary_key=True, db_column='pid')
         salery = models.FloatField(null=True, blank=True)
         class Meta:
                 db_table = u'hiresDirect'
@@ -238,8 +235,8 @@ class Hiresdirect(models.Model):
 		return u'[%s] hired [%s]' % (self.pid, self.mid)
 
 class Isfriend(models.Model):
-        uid1 = models.IntegerField(primary_key=True)
-        uid2 = models.IntegerField(primary_key=True)
+        uid1 = models.ForeignKey('Users', to_field='user_id', unique=True, db_column='user_id', related_name='uid1')
+        uid2 = models.ForeignKey('Users', to_field='user_id', unique=True, db_column='user_id', related_name='uid2')
         class Meta:
                 db_table = u'isFriend'
 		
@@ -247,8 +244,8 @@ class Isfriend(models.Model):
 		return u'[%s] is friends with [%s]' % (self.uid1, self.uid2)
 
 class Isinvolved(models.Model):
-        pid = models.IntegerField(primary_key=True)
-        mid = models.IntegerField(max_length=10, primary_key=True)
+        pid = models.ForeignKey('Person', to_field='pid', primary_key=True, db_column='pid')
+        mid = models.ForeignKey('Movie', to_field='mid', primary_key=True, db_column='mid')
         role = models.CharField(max_length=24, primary_key=True)
         class Meta:
                 db_table = u'isInvolved'
@@ -257,8 +254,8 @@ class Isinvolved(models.Model):
 		return u'[%s] is involved with [%s] as [%s]' % (self.pid, self.mid, self.role)
 
 class Istype(models.Model):
-        mid = models.IntegerField(primary_key=True)
-        gid = models.IntegerField(primary_key=True)
+        mid = models.ForeignKey('Movie', to_field='mid', primary_key=True, db_column='mid')
+        gid = models.ForeignKey('Genre', to_field='gid', primary_key=True, db_column='gid')
         class Meta:
                 db_table = u'isType'
 		
@@ -266,8 +263,8 @@ class Istype(models.Model):
 		return u'[%s] is [%s]' % (self.mid, self.gid)
 
 class Suppliesad(models.Model):
-        adver_id = models.IntegerField(primary_key=True)
-        ad_id = models.IntegerField()
+        adver_id = models.ForeignKey('Advertisor', to_field='adver_id', primary_key=True, db_column='adver_id')
+        ad_id = models.ForeignKey('Advertisement', to_field='ad_id', primary_key=True, db_column='ad_id')
         class Meta:
                 db_table = u'suppliesAd'
 		
@@ -275,8 +272,8 @@ class Suppliesad(models.Model):
 		return u'[%s] advertises [%s]' % (self.adver_id, self.ad_id)
 
 class Targetsgenre(models.Model):
-        ad_id = models.IntegerField(primary_key=True)
-        genre = models.IntegerField()
+        ad_id = models.ForeignKey('Advertisement', to_field='ad_id', primary_key=True, db_column='ad_id')
+        genre = models.ForeignKey('Genre', to_field='gid', primary_key=True, db_column='gid')
         class Meta:
                 db_table = u'targetsGenre'
 		
