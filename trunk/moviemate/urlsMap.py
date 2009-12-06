@@ -8,4 +8,4 @@ def root_view(request):
     return HttpResponseRedirect('/home/')
 
 def home(request):
-    render_to_response('index.html')
+    return render_to_response('index.html')

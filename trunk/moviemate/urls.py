@@ -1,4 +1,7 @@
 from django.conf.urls.defaults import *
+
+from moviemate import views
+
 from moviemate.urlsMap import *
 
 # Uncomment the next two lines to enable the admin:
@@ -15,6 +18,8 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/(.*)', admin.site.root),
+    
+    (r'^movie/(?P<mid>\d+)$', views.movie_page),
     (r'^$', root_view),
     (r'^home/$', home),
 )
