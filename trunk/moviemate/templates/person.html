@@ -1,0 +1,58 @@
+{% extends "index.html" %}
+{% block title %} {{ person.name }} {% endblock %}
+{% block scripts %}
+	<script type="text/javascript">
+		$(function(){
+			$('#tabs').tabs();
+		});
+	</script>
+{% endblock %}
+
+{% block content %}
+
+	<!-- Tabs -->
+	<div id="tabs">
+		<ul>
+			<li><a href="#tabs-1">Info</a></li>
+			<li><a href="#tabs-2">Movies</a></li>
+
+		</ul>
+		<div id="tabs-1">
+			<h3>{{ person.name }}</h3>
+			<table border="0">
+				
+				<tr>
+					<td><b>Age:</b></td>
+					<td>{{ person.age }}</td>
+					
+				</tr>
+				<tr>
+					<td><b>Gender:</b></td>
+					<td>{{ person.gender }}</td>
+				</tr>			
+				<tr>
+					<td><b># of movies:</b></td>
+					<td>{{ person.number}}</td>
+				</tr>
+							
+			</table>
+			<br style="clear: both;"/>
+		</div> <!-- tabs1 -->
+		
+		<div id="tabs-2">
+			<h3>Movies {{ person.name }} is involved with</h3>
+			<table border='0'>
+				<tr>
+					<td><b>Movie</b></td>
+					<td><b>Role</b></td>
+				</tr>
+				{% for m in movies %}
+				<tr>
+					<td><a href="/movie/{{m.mid}}">{{ m.name }} ({{ m.year }})</a></td>
+					<td>{{ m.role }}</td>
+				</tr>
+				{% endfor %}
+			</table>
+		</div> <!-- tabs2 -->
+	</div> <!-- tabs -->
+{% endblock %}

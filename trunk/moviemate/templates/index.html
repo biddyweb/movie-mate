@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1" />
+		<title>{% block title %}{% endblock %}</title>
+		<link type="text/css" href="/files/css/custom-theme/jquery-ui-1.7.2.custom.css" rel="stylesheet" />
+		<link rel="stylesheet" href="/files/726916.css" type="text/css" />
+		<script type="text/javascript" src="/files/js/jquery-1.3.2.min.js"></script>
+		<script type="text/javascript" src="/files/js/jquery-ui-1.7.2.custom.min.js"></script>
+		{% block scripts %}
+
+		{% endblock %}
+		
+		{% block css %}
+		<style type="text/css">
+			/*demo page css*/
+			body{ font: 62.5% "Trebuchet MS", sans-serif; margin: 50px;}
+			.demoHeaders { margin-top: 2em; }
+			#dialog_link {padding: .4em 1em .4em 20px;text-decoration: none;position: relative;}
+			#dialog_link span.ui-icon {margin: 0 5px 0 0;position: absolute;left: .2em;top: 50%;margin-top: -8px;}
+			ul#icons {margin: 0; padding: 0;}
+			ul#icons li {margin: 2px; position: relative; padding: 4px 0; cursor: pointer; float: left;  list-style: none;}
+			ul#icons span.ui-icon {float: left; margin: 0 4px;}
+		</style>	
+		{% endblock %}
+	</head>
+	
+	<body>
+	<div id="pagewidth">
+		<div id="banner"> </div>
+	
+		<div id="header">
+			<center>
+				<form id="frmSearch" action="" method="get">
+					<input id="txtHomeSearch" class="tb7" type="text" name="searchfor" class="textbox" value=""/>
+					<input style="position:absolute" left:-10px; type="image" value="Search" src="/files/button-home-search.gif"/>
+				</form>
+				
+			</center>
+			
+			{% block loginBox %}
+			{% include 'loginBox.html' %}
+			{% endblock %}
+		</div> <!-- header -->
+		
+		<div id="wrapper" class="clearfix">
+			<div id="twocols" class="clearfix">
+				<div id="maincol">
+					<p></p>
+					<br><br>
+					
+					{% block content %}
+					
+					{% endblock %}
+				</div> <!-- maincol -->
+				
+				<div id="rightcol">
+					<br><br><br>
+					custAdWTF
+					<br><br><br>
+					{% block custAd %}
+					{% include 'custAd.html' %}
+					{% endblock %}
+				</div> <!-- rightcol -->
+			</div> <!-- twocols -->
+		
+			<div id="leftcol">
+			</div> <!-- leftcol -->
+			<br><br><br>
+				{% block top5 %}
+				{% include 'top5.html' %}
+				{% endblock %}
+			
+				{% block userOp %}
+				{% include 'userOp.html' %}
+				{% endblock %}
+			
+		
+	
+		
+		</div> <!-- wrapper -->
+	</div> <!-- pagewidth -->
+
+		
+	</body>
+</html>
+
+
