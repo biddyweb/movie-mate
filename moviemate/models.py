@@ -9,6 +9,7 @@
 
 from django.db import models
 from django.contrib import admin
+from django.contrib.auth.models import User
 
 class Advertisement(models.Model):
         ad_id = models.IntegerField(primary_key=True)
@@ -143,11 +144,11 @@ class Ratesfmovie(models.Model):
 		return u'[%s] rated [%s] a [%s]' % (self.user_id, self.fmid, self.rating)
 
 class Review(models.Model):
-        review_id = models.IntegerField(primary_key=True)
-        user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
-        mid = models.ForeignKey('Movie', to_field='mid', primary_key=True, db_column='mid')
-        summary = models.TextField(blank=True)
-        class Meta:
+	user_id = models.ForeignKey('Users', to_field='user_id', primary_key=True, db_column='user_id')
+	mid = models.ForeignKey('Movie', to_field='mid', primary_key=True, db_column='mid')
+	summary = models.TextField(blank=True)
+	timestamp = models.DateTimeField(unique=True, primary_key=True)
+	class Meta:
                 db_table = u'Review'
 		
 	def __unicode__(self):
@@ -182,6 +183,16 @@ class Users(models.Model):
 
         def __unicode__(self):
                 return u"%s, <%s>" % (self.name, self.login)
+		
+class TestUser(User):
+	id = models.IntegerField(unique=True, db_column='user_id')
+	is_superuser = models.IntegerField(null=True, db_column='isAdmin')
+	username = models.CharField(max_length=255, primary_key=True, db_column='login')
+	password = models.CharField(max_length=255, db_column='psword')
+
+	class Meta:
+		db_table = u'TestUser'
+		
 
 
 class Choosetype(models.Model):
@@ -282,6 +293,9 @@ class Targetsgenre(models.Model):
 
 
 
+	
+
+
 admin.site.register(Advertisement)
 admin.site.register(Advertisor)
 admin.site.register(Fantasymovie)
@@ -307,4 +321,6 @@ admin.site.register(Isinvolved)
 admin.site.register(Istype)
 admin.site.register(Suppliesad)
 admin.site.register(Targetsgenre)
+
+admin.site.register(TestUser)
 
