@@ -22,4 +22,13 @@ urlpatterns = patterns('',
     (r'^movie/(?P<mid>\d+)$', views.movie_page),
     (r'^$', root_view),
     (r'^home/$', home),
+    
+    (r'^person/(?P<pid>\d+)$', views.person_page),
+    
+    
+    (r'^files/(?P<path>.*)$',
+        'django.views.static.serve',
+        {'document_root': '/Users/cs320dev/Dev/db/moviemate/templates/'}
+    ),
+
 )
