@@ -9,7 +9,6 @@
 
 from django.db import models
 from django.contrib import admin
-from django.contrib.auth.models import User
 
 class Advertisement(models.Model):
         ad_id = models.IntegerField(primary_key=True)
@@ -167,7 +166,8 @@ class Updates(models.Model):
 
 class Users(models.Model):
         user_id = models.IntegerField(unique=True)
-        isadmin = models.IntegerField(null=True, db_column='isAdmin', blank=True) # Field name made lowercase.
+        is_admin = models.IntegerField(null=True, db_column='isAdmin', blank=True) # Field name made lowercase.
+        is_active = models.IntegerField(null=True, db_column='isActive', blank=True)
         login = models.CharField(max_length=255, primary_key=True)
         psword = models.CharField(max_length=255, blank=True)
         name = models.CharField(max_length=255, blank=True)
@@ -183,17 +183,67 @@ class Users(models.Model):
 
         def __unicode__(self):
                 return u"%s, <%s>" % (self.name, self.login)
-		
-class TestUser(User):
-	id = models.IntegerField(unique=True, db_column='user_id')
-	is_superuser = models.IntegerField(null=True, db_column='isAdmin')
-	username = models.CharField(max_length=255, primary_key=True, db_column='login')
-	password = models.CharField(max_length=255, db_column='psword')
 
-	class Meta:
-		db_table = u'TestUser'
-		
+        def get_absolute_url(self):
+            return "/users/%s/" % urllib.quote(smart_str(self.username))
 
+        def is_anonymous(self):
+            "Always returns False. This is a way of comparing User objects to anonymous users."
+            return False
+
+        def is_authenticated(self):
+            """Always return True. This is a way to tell if the user has been authenticated in templates.
+            """
+            return True
+
+        def set_password(self, raw_password):
+            import random
+            algo = 'sha1'
+            salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
+            hsh = get_hexdigest(algo, salt, raw_password)
+            self.psword = '%s$%s$%s' % (algo, salt, hsh)
+
+        def check_password(self, raw_password):
+            """
+            Returns a boolean of whether the raw_password was correct. Handles
+            encryption formats behind the scenes.
+            """
+            # Backwards-compatibility check. Older passwords won't include the
+            # algorithm or salt.
+            if '$' not in self.psword:
+                is_correct = (self.psword == get_hexdigest('md5', '', raw_password))
+                if is_correct:
+                    # Convert the password to the new, more secure format.
+                    self.set_psword(raw_password)
+                    self.save()
+                return is_correct
+            return check_password(raw_password, self.psword)
+
+            def set_unusable_password(self):
+                # Sets a value that will never be a valid hash
+                self.psword = UNUSABLE_PASSWORD
+
+            def has_usable_password(self):
+                return self.psword != UNUSABLE_PASSWORD
+
+            def is_admin(self):
+                return self.is_admin
+            
+            def has_perm(self, perm):
+                """
+                Returns True if the user has the specified permission. This method
+                queries all available auth backends, but returns immediately if any
+                backend returns True. Thus, a user who has permission from a single
+                auth backend is assumed to have permission in general.
+                """
+                # Inactive users have no permissions.
+                if not self.is_active:
+                    return False
+
+                # Admins have all permissions.
+                if self.is_admin:
+                    return True
+                return False
 
 class Choosetype(models.Model):
         fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')
@@ -292,10 +342,6 @@ class Targetsgenre(models.Model):
 
 
 
-
-	
-
-
 admin.site.register(Advertisement)
 admin.site.register(Advertisor)
 admin.site.register(Fantasymovie)
@@ -321,6 +367,3 @@ admin.site.register(Isinvolved)
 admin.site.register(Istype)
 admin.site.register(Suppliesad)
 admin.site.register(Targetsgenre)
-
-admin.site.register(TestUser)
-
