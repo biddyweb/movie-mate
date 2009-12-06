@@ -1,0 +1,80 @@
+{% extends "index.html" %}
+{% block title %} {{ movie.name }} {% endblock %}
+{% block scripts %}
+	<script type="text/javascript">
+		$(function(){
+			$('#tabs').tabs();
+		});
+	</script>
+{% endblock %}
+
+{% block content %}
+
+	<!-- Tabs -->
+	<div id="tabs">
+		<ul>
+			<li><a href="#tabs-1">Overview</a></li>
+			<li><a href="#tabs-2">Details</a></li>
+			<li><a href="#tabs-3">Reviews</a></li>
+		</ul>
+		<div id="tabs-1">
+			<span class="floatimgleft"><img class="profileImg" alt="WarGames" src="WarGames.jpg"/><br />War Games</span>
+			PUT A SYNOPSIS HERE!@$!$%!#$%@$%@$%@!#$%@$%@$ $$$$$$$$$%@$%@#$%@#$ %@#$%@#$%@#$%235423452 34523452345RTGDSFGk jahsdljadslfjblah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah blah 
+			<br style="clear: both;"/>
+		</div> <!-- tabs2 -->
+
+
+
+		<div id="tabs-2">
+			<h3>Details</h3>
+			<table border="0">
+				<tr>
+					<td>Avg Rating</td>
+					<td>1 million!</td>
+					<td>xxxxxx number of ratings</td>
+				</tr>
+				<tr>
+					<td>Release Year</td>
+					<td>1983</td>
+				</tr>			
+				<tr>
+					<td>Genre</td>
+					<td>Sci-Fi</td>
+				</tr>
+				<tr>
+					<td>Director</td>
+					<td>John Doe</td>
+				</tr>			
+			</table>
+			<h3>Cast</h3>
+			<table border="0">
+				<tr>
+					<td>Character</td>
+					<td>Person</td>
+				</tr>			
+				<tr>
+					<td>Character</td>
+					<td>Person</td>
+				</tr>
+				<tr>
+					<td>Character</td>
+					<td>Person</td>
+				</tr>			
+			</table>
+		</div> <!-- tabs2 -->
+		
+		<div id="tabs-3">
+			<h3>Member Reviews</h3>
+			<div id="reviewBox">
+		
+				<div id="review"><span class="author">Marisa Pacifico</span><BR><BR>
+					<span class="content">
+					THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW THIS IS MY REVIEW.</span> 
+				</div><!-- review -->
+		
+			</div> <!-- reviewBox -->
+		</div> <!-- tabs3 -->
+
+	</div> <!-- tabs -->
+	
+{% endblock %}

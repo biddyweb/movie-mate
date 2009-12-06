@@ -1,0 +1,78 @@
+{% extends "index.html" %}
+{% block title %} {{ movie.name }} ({{movie.year}}){% endblock %}
+{% block scripts %}
+	<script type="text/javascript">
+		$(function(){
+			$('#tabs').tabs();
+		});
+	</script>
+{% endblock %}
+
+{% block content %}
+
+	<!-- Tabs -->
+	<div id="tabs">
+		<ul>
+			<li><a href="#tabs-1">Overview</a></li>
+			<li><a href="#tabs-2">Cast</a></li>
+			<li><a href="#tabs-3">Reviews</a></li>
+		</ul>
+		<div id="tabs-1">
+			<h3>{{ movie.name }} ({{movie.year}})</h3>
+			<table border="0">
+				
+				<tr>
+					<td><b>Avg Rating:</b></td>
+					<td>{{ movie.avgrating }}<b>/</b>10.0 (based on {{ movie.numofratings }} ratings)</td>
+					
+				</tr>
+				<tr>
+					<td><b>Release Year:</b></td>
+					<td>{{ movie.year }}</td>
+				</tr>			
+				<tr>
+					<td><b>Genre:</b></td>
+					<td>{{ movie.genre}}</td>
+				</tr>
+				<tr>
+					<td><b>Director:</b></td>
+					<td>{{ director.name }}</td>
+				</tr>			
+			</table>
+			<br style="clear: both;"/>
+		</div> <!-- tabs1 -->
+
+
+
+		<div id="tabs-2">
+			<h3>Cast</h3>
+			
+			<table border="0">
+				{% for person in cast %}
+				<tr>
+					<td><a href="/person/{{person.pid}}">{{ person.name }}</a></td>
+					<td>({{ person.role }})</td>
+				</tr>	
+				{% endfor %}
+							
+			</table>
+		</div> <!-- tabs2 -->
+		
+		<div id="tabs-3">
+			<h3>Member Reviews</h3>
+			<div id="reviewBox">
+				
+				{% for review in reviews %}
+				<div id="review"><span class="author">{{review.username}} @ {{ review.timestamp }}</span><BR><BR>
+					<span class="content">
+					{{review.summary}}
+					</span> 
+				</div><!-- review -->
+				{% endfor %}
+		
+			</div> <!-- reviewBox -->
+		</div> <!-- tabs3 -->
+
+	</div> <!-- tabs -->
+	
+{% endblock %}

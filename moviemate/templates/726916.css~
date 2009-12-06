@@ -1,0 +1,135 @@
+
+html, body{ 
+ margin:0; 
+ padding:0;
+ } 
+ 
+ img.profileImg {height: 200px; 
+ width: 200px;}
+ 
+ table {width:100%;}
+ 
+ .floatimgleft {
+float:left;
+margin-top:10px;
+margin-right:10px;
+margin-bottom:10px;
+color:#940F36;
+font-weight: bold;
+font-size: 18px;}
+
+.tb7 {
+	width: 400px;
+	background: transparent url('bg.png') no-repeat;
+	color : #000000;
+	font-weight: bold;
+	font-size: 16px;
+	height:32px;
+	border:0;
+	padding:0px 0px;
+	margin-bottom:0px;
+
+}
+
+table {cellpadding:5; cellspacing:2;}
+
+#reviewBox{}
+#review {
+border: 1px solid black; margin: 10px; padding: 5px;
+background: #D8f0ff;
+width:95%;}
+
+.author{color:#003D79; font-weight: bold; ext-align:left; padding: 2px;}
+.content{color:#000000; text-indent:2em; margin-top: 2px;}
+
+h3 {color:#940F36;
+font-weight: bold;}
+
+#pagewidth{ }
+ 
+#banner{
+ position:relative; 
+ height:270px; 
+  background-color:#FFFFFF;
+ background-image:url('moviemate2.png');
+background-repeat:no-repeat;
+background-position: center center;
+ width:100%;
+} 
+
+#header{
+ position:relative; 
+ height:30px; 
+  background-color:#002b67; 
+  background-image:url('wholebg.jpg');
+background-repeat: x-repeat;
+background-position: center center;
+ width:100%;
+} 
+ 
+#leftcol{
+ width:20%; 
+ float:left; 
+ position:relative; 
+ background-color:#FFFFFF;  
+ }
+ #custAd {}
+ 
+#twocols{
+ width:80%; 
+ float:right;
+ position:relative; 
+  }
+ 
+#rightcol{
+ width:25%; 
+ float:right;
+ position:relative; 
+ background-color:#FFFFFF;
+ text-align: right;
+ }
+ 
+ #top5 {font-size:12px;}
+ #userOp{font-size:12px;}
+ 
+#maincol{background-color: #FFFFFF;  
+ float: left; 
+ display:inline; 
+ position: relative;
+ width:75%;
+ }
+ 
+A:link {color:#940F36; text-decoration: none}
+A:visited {color:#940F36; text-decoration: none}
+A:active {color:#940F36; text-decoration: none}
+A:hover {color:#002b67; text-decoration: none;}
+
+
+ /* *** Float containers fix:
+ http://www.csscreator.com/attributes/containedfloat.php *** */ 
+.clearfix:after {
+ content: "."; 
+ display: block; 
+height: 0; 
+ clear: both; 
+ visibility: hidden;
+ }
+ 
+.clearfix{display: inline-block;}
+
+/* Hides from IE-mac \*/
+* html .clearfix{height: 1%;}
+.clearfix{display: block;}
+/* End hide from IE-mac */  
+
+
+ 
+ /*printer styles*/ 
+ @media print{ 
+/*hide the left column when printing*/ 
+#leftcol{display:none;} 
+
+/*hide the right column when printing*/ 
+#rightcol{display:none;} 
+#twocols, #maincol{width:100%; float:none;}
+}
