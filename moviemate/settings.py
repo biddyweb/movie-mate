@@ -89,11 +89,9 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    "moviemate.authentication.AuthenticationBackend",
-    #"django.contrib.auth.backends.ModelBackend",
+#    "moviemate.authentication.AuthenticationBackend",
+    "django.contrib.auth.backends.ModelBackend",
 )
-CUSTOM_USER_MODEL = 'moviemate.models.Users'
-AUTH_ADMIN_MODEL = 'moviemate.models.Users'
 
 INSTALLED_APPS = (
     'moviemate',

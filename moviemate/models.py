@@ -9,6 +9,8 @@
 
 from django.db import models
 from django.contrib import admin
+from django.contrib.auth.models import User, UserManager
+from django.utils.translation import ugettext_lazy as _
 
 class Advertisement(models.Model):
         ad_id = models.IntegerField(primary_key=True)
@@ -165,11 +167,13 @@ class Updates(models.Model):
 		return u'[%s] performed [%s] on [%s]' % (self.up_id, self.action, self.tmstamp)
 
 class Users(models.Model):
-        user_id = models.IntegerField(unique=True)
-        is_admin = models.IntegerField(null=True, db_column='isAdmin', blank=True) # Field name made lowercase.
+        username = models.CharField(max_length=255, primary_key=True, db_column='login')  
+        id = models.IntegerField(unique=True, db_column='user_id')
+        email = models.CharField(max_length=255, primary_key=True, db_column='login')
+        password = models.CharField(max_length=255, blank=True, db_column='psword')
         is_active = models.IntegerField(null=True, db_column='isActive', blank=True)
-        login = models.CharField(max_length=255, primary_key=True)
-        psword = models.CharField(max_length=255, blank=True)
+        is_staff = models.IntegerField(null=True, db_column='isAdmin', blank=True)
+        is_superuser = models.IntegerField(null=True, db_column='isAdmin', blank=True)
         name = models.CharField(max_length=255, blank=True)
         age = models.IntegerField(null=True, blank=True)
         country = models.CharField(max_length=255, blank=True)
@@ -178,12 +182,15 @@ class Users(models.Model):
         gender = models.CharField(max_length=3, blank=True)
         school = models.CharField(max_length=255, blank=True)
         fantasybudget = models.FloatField(null=True, db_column='fantasyBudget', blank=True) # Field name made lowercase.
+        objects = UserManager()
         class Meta:
                 db_table = u'Users'
+                verbose_name = _('user')
+                verbose_name_plural = _('users')
 
         def __unicode__(self):
-                return u"%s, <%s>" % (self.name, self.login)
-
+                return self.username
+            
         def get_absolute_url(self):
             return "/users/%s/" % urllib.quote(smart_str(self.username))
 
@@ -196,12 +203,17 @@ class Users(models.Model):
             """
             return True
 
+        def get_full_name(self):
+            "Returns the first_name plus the last_name, with a space in between."
+            full_name = u'%s %s' % (self.first_name, self.last_name)
+            return full_name.strip()
+
         def set_password(self, raw_password):
             import random
             algo = 'sha1'
             salt = get_hexdigest(algo, str(random.random()), str(random.random()))[:5]
             hsh = get_hexdigest(algo, salt, raw_password)
-            self.psword = '%s$%s$%s' % (algo, salt, hsh)
+            self.password = '%s$%s$%s' % (algo, salt, hsh)
 
         def check_password(self, raw_password):
             """
@@ -210,40 +222,115 @@ class Users(models.Model):
             """
             # Backwards-compatibility check. Older passwords won't include the
             # algorithm or salt.
-            if '$' not in self.psword:
-                is_correct = (self.psword == get_hexdigest('md5', '', raw_password))
+            if '$' not in self.password:
+                is_correct = (self.password == get_hexdigest('md5', '', raw_password))
                 if is_correct:
                     # Convert the password to the new, more secure format.
-                    self.set_psword(raw_password)
+                    self.set_password(raw_password)
                     self.save()
                 return is_correct
-            return check_password(raw_password, self.psword)
+            return check_password(raw_password, self.password)
 
-            def set_unusable_password(self):
-                # Sets a value that will never be a valid hash
-                self.psword = UNUSABLE_PASSWORD
+        def set_unusable_password(self):
+            # Sets a value that will never be a valid hash
+            self.password = UNUSABLE_PASSWORD
 
-            def has_usable_password(self):
-                return self.psword != UNUSABLE_PASSWORD
+        def has_usable_password(self):
+            return self.password != UNUSABLE_PASSWORD
 
-            def is_admin(self):
-                return self.is_admin
-            
-            def has_perm(self, perm):
-                """
-                Returns True if the user has the specified permission. This method
-                queries all available auth backends, but returns immediately if any
-                backend returns True. Thus, a user who has permission from a single
-                auth backend is assumed to have permission in general.
-                """
-                # Inactive users have no permissions.
-                if not self.is_active:
-                    return False
+        def get_group_permissions(self):
+            """
+            Returns a list of permission strings that this user has through
+            his/her groups. This method queries all available auth backends.
+            """
+            permissions = set()
+            for backend in auth.get_backends():
+                if hasattr(backend, "get_group_permissions"):
+                    permissions.update(backend.get_group_permissions(self))
+            return permissions
 
-                # Admins have all permissions.
-                if self.is_admin:
-                    return True
+        def get_all_permissions(self):
+            permissions = set()
+            for backend in auth.get_backends():
+                if hasattr(backend, "get_all_permissions"):
+                    permissions.update(backend.get_all_permissions(self))
+            return permissions
+
+        def has_perm(self, perm):
+            """
+            Returns True if the user has the specified permission. This method
+            queries all available auth backends, but returns immediately if any
+            backend returns True. Thus, a user who has permission from a single
+            auth backend is assumed to have permission in general.
+            """
+            # Inactive users have no permissions.
+            if not self.is_active:
                 return False
+
+            # Superusers have all permissions.
+            if self.is_superuser:
+                return True
+
+            # Otherwise we need to check the backends.
+            for backend in auth.get_backends():
+                if hasattr(backend, "has_perm"):
+                    if backend.has_perm(self, perm):
+                        return True
+            return False
+
+        def has_perms(self, perm_list):
+            """Returns True if the user has each of the specified permissions."""
+            for perm in perm_list:
+                if not self.has_perm(perm):
+                    return False
+            return True
+
+        def has_module_perms(self, app_label):
+            """
+            Returns True if the user has any permissions in the given app
+            label. Uses pretty much the same logic as has_perm, above.
+            """
+            if not self.is_active:
+                return False
+
+            if self.is_superuser:
+                return True
+
+            for backend in auth.get_backends():
+                if hasattr(backend, "has_module_perms"):
+                    if backend.has_module_perms(self, app_label):
+                        return True
+            return False
+
+        def get_and_delete_messages(self):
+            messages = []
+            for m in self.message_set.all():
+                messages.append(m.message)
+                m.delete()
+            return messages
+
+        def email_user(self, subject, message, from_email=None):
+            "Sends an e-mail to this User."
+            from django.core.mail import send_mail
+            send_mail(subject, message, from_email, [self.email])
+
+        def get_profile(self):
+            """
+            Returns site-specific profile for this user. Raises
+            SiteProfileNotAvailable if this site does not allow profiles.
+            """
+            if not hasattr(self, '_profile_cache'):
+                from django.conf import settings
+                if not getattr(settings, 'AUTH_PROFILE_MODULE', False):
+                    raise SiteProfileNotAvailable
+                try:
+                    app_label, model_name = settings.AUTH_PROFILE_MODULE.split('.')
+                    model = models.get_model(app_label, model_name)
+                    self._profile_cache = model._default_manager.get(user__id__exact=self.id)
+                    self._profile_cache.user = self
+                except (ImportError, ImproperlyConfigured):
+                    raise SiteProfileNotAvailable
+            return self._profile_cache
 
 class Choosetype(models.Model):
         fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')
