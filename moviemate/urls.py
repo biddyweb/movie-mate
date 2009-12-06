@@ -1,4 +1,5 @@
 from django.conf.urls.defaults import *
+from moviemate.settings import APP_PATH
 
 from moviemate import views
 
@@ -28,7 +29,7 @@ urlpatterns = patterns('',
     
     (r'^files/(?P<path>.*)$',
         'django.views.static.serve',
-        {'document_root': '/Users/cs320dev/Dev/db/moviemate/templates/'}
+        {'document_root': APP_PATH + '/templates/'}
     ),
 
 )
