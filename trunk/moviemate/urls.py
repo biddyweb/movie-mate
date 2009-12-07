@@ -26,7 +26,11 @@ urlpatterns = patterns('',
     
     (r'^person/(?P<pid>\d+)$', views.person_page),
     
+    #basic search
+    (r'^search/(?P<type>(movie|person|friend))/(?P<query>.+)$', views.basic_search),
     
+    
+    #to make static files work
     (r'^files/(?P<path>.*)$',
         'django.views.static.serve',
         {'document_root': APP_PATH + '/templates/'}
