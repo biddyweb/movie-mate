@@ -1,8 +1,24 @@
 from moviemate import models
+from moviemate import forms as myForms
 from django.shortcuts import render_to_response
 from django.db import connection, transaction
 
+def get_movie_info(mid):
+	try:
+		cursor.execute("""select m.name, m.year, m.avgRating, 
+				m.numOfRatings, g.genre
+				from Movie m, Genre g, isType i
+				where m.mid='%s' and i.mid=m.mid and g.gid = i.gid""" % mid)
+		row = cursor.fetchone()
+		movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'genre':row[4]}
 
+	except:
+		cursor.execute("""select m.name, m.year, m.avgRating, m.numOfRatings
+				from Movie m
+				where m.mid='%s'""" % mid)
+		row = cursor.fetchone()
+		movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3]}
+	return movie
 
 def movie_page(request, mid):
 	if mid == None:
@@ -112,3 +128,21 @@ def basic_search(request, type, query):
 	for r in row:
 		results.append({'type':type, 'id':r[0], 'name':r[1], 'data':r[2:]})
 	return render_to_response('testresults.html', locals())
+
+def edit_profile(request, user_id):
+	if request.method == 'POST':
+		form = ProfileForm(request.POST)
+		if(form.isValid):
+			form.save()
+	else:
+		return render_to_response('editprofile.html', {'form': form,})
+	
+def review(request):
+	if request.method == 'POST':
+		form = myForms.ReviewForm(request.POST)
+		if(form.isValid):
+			form.save()
+	else:
+		form = myForms.ReviewForm()
+		return render_to_response('review.html', {'form':form,})
+	

@@ -23,6 +23,7 @@ urlpatterns = patterns('',
     (r'^movie/(?P<mid>\d+)$', views.movie_page),
     (r'^$', root_view),
     (r'^home/$', home),
+    (r'^review/$', views.review),
     
     (r'^person/(?P<pid>\d+)$', views.person_page),
     
