@@ -2,6 +2,8 @@ from moviemate import models
 from moviemate import forms as myForms
 from django.shortcuts import render_to_response
 from django.db import connection, transaction
+from math import ceil
+from django.template.context import RequestContext
 
 def get_movie_info(mid):
 	try:
@@ -11,14 +13,9 @@ def get_movie_info(mid):
 				where m.mid='%s' and i.mid=m.mid and g.gid = i.gid""" % mid)
 		row = cursor.fetchone()
 		movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'genre':row[4]}
-
 	except:
-		cursor.execute("""select m.name, m.year, m.avgRating, m.numOfRatings
-				from Movie m
-				where m.mid='%s'""" % mid)
-		row = cursor.fetchone()
-		movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3]}
-	return movie
+		pass
+
 
 def movie_page(request, mid):
 	if mid == None:
@@ -35,18 +32,18 @@ def movie_page(request, mid):
 		#stupid hack for missing genre info
 		try:
 			cursor.execute("""select m.name, m.year, m.avgRating, 
-					m.numOfRatings, g.genre
+					m.numOfRatings, m.MPAA, g.genre
 					from Movie m, Genre g, isType i
 					where m.mid='%s' and i.mid=m.mid and g.gid = i.gid""" % mid)
 			row = cursor.fetchone()
-			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'genre':row[4]}
+			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4], 'genre':row[5]}
 
 		except:
-			cursor.execute("""select m.name, m.year, m.avgRating, m.numOfRatings
+			cursor.execute("""select m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA
 					from Movie m
 					where m.mid='%s'""" % mid)
 			row = cursor.fetchone()
-			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3]}
+			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4]}
 
 	
 	
@@ -82,7 +79,7 @@ def movie_page(request, mid):
 				reviews.append({'username':r[0], 'summary':r[1], 'timestamp':r[2]})
 		except:
 			pass
-	
+	cursor.close()
 	return render_to_response('movie.html', locals())
 	
 	
@@ -100,21 +97,26 @@ def person_page(request, pid):
 	for m in row:
 		movies.append({'name':m[0], 'year':m[1], 'mid':m[2], 'role':m[3]})
 	
+	cursor.close()
 	return render_to_response('person.html', locals())
 	
-def basic_search(request, type, query):
+def basic_search(request, type, query, count=10):
 	if type == 'movie':
 		cursor = connection.cursor()
 		cursor.execute("""select m.mid, m.name, m.year, m.avgRating
 				from Movie m
-				where m.name like '%%"""+query+"%%' limit 10")
+				where m.name like '%%"""+query+"""%%' 
+				order by m.numOfRatings desc limit 25""")
+		
+		numResults = cursor.rowcount
 		row = cursor.fetchall()
 		
 	elif type == 'person':
 		cursor = connection.cursor()
 		cursor.execute("""select p.pid, p.name from Person p
 				where p.name = '%s'""" % query)
-		row = cursor.fetchall()
+		numResults = cursor.rowcount
+		row = cursor.fetchmany(count)
 	elif type == 'friend':
 		cursor = connection.cursor()
 		cursor.execute("""select u.user_id, u.name, u.login
@@ -122,11 +124,15 @@ def basic_search(request, type, query):
 				where (u.name like '%%"""+query+"""%%')
 				or (u.login like '%%"""+query+"""%%')
 				""")
-		row = cursor.fetchall()
+		numResults = cursor.rowcount
+		row = cursor.fetchmany(count)
 	
 	results = []
 	for r in row:
 		results.append({'type':type, 'id':r[0], 'name':r[1], 'data':r[2:]})
+	
+	cursor.close()
+	numPages = int(ceil(numResults / 10.0))
 	return render_to_response('testresults.html', locals())
 
 def edit_profile(request, user_id):
@@ -146,3 +152,19 @@ def review(request):
 		form = myForms.ReviewForm()
 		return render_to_response('review.html', {'form':form,})
 	
+	
+	
+def ajax_top_five(request):
+	if request.is_ajax():
+		cursor = connection.cursor()
+		cursor.execute("""select m.name, m.year, m.mid
+				from TopFiftyMovies m
+				limit 5""")
+		row = cursor.fetchall()
+		movies = []
+		for r in row:
+			movies.append({'name':r[0], 'year':r[1], 'mid':r[2]})
+		template = "top5.html"
+		data = {'results':movies}
+			
+		return render_to_response(template, data )

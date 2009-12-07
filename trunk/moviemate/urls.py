@@ -23,13 +23,15 @@ urlpatterns = patterns('',
     (r'^movie/(?P<mid>\d+)$', views.movie_page),
     (r'^$', root_view),
     (r'^home/$', home),
-    (r'^review/$', views.review),
     
     (r'^person/(?P<pid>\d+)$', views.person_page),
     
     #basic search
     (r'^search/(?P<type>(movie|person|friend))/(?P<query>.+)$', views.basic_search),
     
+    url(r'^top5$', views.ajax_top_five, name='demo_ajax_top_five'),
+    
+    (r'^review/$', views.review),
     
     #to make static files work
     (r'^files/(?P<path>.*)$',

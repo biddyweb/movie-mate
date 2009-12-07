@@ -20,7 +20,7 @@ font-size: 18px;}
 
 .tb7 {
 	width: 400px;
-	background: transparent url('bg.png') no-repeat;
+	background: transparent url('files/bg.png') no-repeat;
 	color : #000000;
 	font-weight: bold;
 	font-size: 16px;
@@ -29,6 +29,16 @@ font-size: 18px;}
 	padding:0px 0px;
 	margin-bottom:0px;
 
+}
+
+.small {
+color:#000000;
+font-size:12px;
+}
+
+.big {
+color:#002b67;
+font-size:20px;
 }
 
 table {cellpadding:5; cellspacing:2;}
@@ -51,7 +61,7 @@ font-weight: bold;}
  position:relative; 
  height:270px; 
   background-color:#FFFFFF;
- background-image:url('moviemate2.png');
+ background-image:url('files/moviemate2.png');
 background-repeat:no-repeat;
 background-position: center center;
  width:100%;
@@ -61,7 +71,7 @@ background-position: center center;
  position:relative; 
  height:30px; 
   background-color:#002b67; 
-  background-image:url('wholebg.jpg');
+  background-image:url('files/wholebg.jpg');
 background-repeat: x-repeat;
 background-position: center center;
  width:100%;
