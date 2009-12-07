@@ -1,8 +1,8 @@
-<div id="top5">
+
+
+
 	<h3>Top 5 Movies</h3>
-	<a href="">Movie 1</a><BR>
-	<a href="">Movie 2</a><BR>
-	<a href="">Movie 3</a><BR>
-	<a href="">Movie 4<a><BR>
-	<a href="">Movie 5</a><BR>
-</div>
+	{% for m in results %}
+		<a href="/movie/{{ m.mid }}">{{ m.name }} ({{ m.year }})</a><br>
+	{% endfor %}
+

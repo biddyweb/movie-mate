@@ -10,5 +10,5 @@ def root_view(request):
     return HttpResponseRedirect('/home/')
 
 def home(request):
-	movie = models.Movie.objects.filter(name="Toy Story")[0]
-    	return render_to_response('movie.html', locals())
+	#movie = models.Movie.objects.filter(name="Toy Story")[0]
+    	return render_to_response('index.html', locals())

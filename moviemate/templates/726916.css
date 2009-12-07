@@ -31,6 +31,16 @@ font-size: 18px;}
 
 }
 
+.small {
+color:#000000;
+font-size:12px;
+}
+
+.big {
+color:#002b67;
+font-size:20px;
+}
+
 table {cellpadding:5; cellspacing:2;}
 
 #reviewBox{}
@@ -66,8 +76,6 @@ background-repeat: x-repeat;
 background-position: center center;
  width:100%;
 } 
-
-
  
 #leftcol{
  width:20%; 
@@ -75,7 +83,7 @@ background-position: center center;
  position:relative; 
  background-color:#FFFFFF;  
  }
-
+ #custAd {}
  
 #twocols{
  width:80%; 
