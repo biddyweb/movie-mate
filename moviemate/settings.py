@@ -94,10 +94,10 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-    "moviemate.authentication.AuthenticationBackend",
+#    "moviemate.authentication.CustomUserModelBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
-CUSTOM_USER_MODEL = 'moviemate.models.TestUsers'
+#CUSTOM_USER_MODEL = 'moviemate.Users'
 
 INSTALLED_APPS = (
     'moviemate',

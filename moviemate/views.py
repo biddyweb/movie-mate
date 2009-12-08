@@ -174,7 +174,6 @@ def ajax_top_five(request):
 		
 def login(request):
 	if request.POST:
-		print '2'
 		user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
 		if user != None and user.is_active:
 			auth.login(request, user)
@@ -182,5 +181,4 @@ def login(request):
 		else: #invalid login or inactive account
 			return HttpResponseRedirect('/search/movie/invalid')
 	else: #request.GET
-		print '1'
 		return render_to_response('login.html', locals())
