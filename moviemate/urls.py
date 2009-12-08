@@ -31,6 +31,9 @@ urlpatterns = patterns('',
     
     #basic search
     (r'^search/(?P<type>(movie|person|friend))/(?P<query>.+)$', views.basic_search),
+    #advanced search
+    (r'^advanced$', views.advance_search),
+    
     
     url(r'^top5$', views.ajax_top_five, name='demo_ajax_top_five'),
     
