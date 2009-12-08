@@ -166,9 +166,10 @@ class Updates(models.Model):
 	def __unicode__(self):
 		return u'[%s] performed [%s] on [%s]' % (self.up_id, self.action, self.tmstamp)
 
-class Users(models.Model): 
-        id = models.IntegerField(unique=True, db_column='user_id')
-        email = models.CharField(max_length=255, primary_key=True, db_column='login')
+class Users(User): 
+        id = models.IntegerField(primary_key=True, db_column='user_id')
+        #id = models.AutoField(primary_key=True, db_column='user_id')
+	username = models.CharField(max_length=255, unique=True, db_column='login')
         password = models.CharField(max_length=255, blank=True, db_column='psword')
         name = models.CharField(max_length=255, blank=True)
         age = models.IntegerField(null=True, blank=True)
@@ -184,6 +185,7 @@ class Users(models.Model):
                 
         def __unicode__(self):
                 return self.email
+		
             
 class Choosetype(models.Model):
         fmid = models.ForeignKey('Fantasymovie', to_field='fmid', primary_key=True, db_column='fmid')

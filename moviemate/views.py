@@ -4,6 +4,8 @@ from django.shortcuts import render_to_response
 from django.db import connection, transaction
 from math import ceil
 from django.template.context import RequestContext
+from django.contrib import auth
+from django.http import HttpResponseRedirect
 
 def get_movie_info(mid):
 	try:
@@ -136,13 +138,14 @@ def basic_search(request, type, query, count=10):
 	return render_to_response('testresults.html', locals())
 
 def edit_profile(request, user_id):
-	if request.method == 'POST':
-		form = ProfileForm(request.POST)
-		if(form.isValid):
-			form.save()
-	else:
-		return render_to_response('editprofile.html', {'form': form,})
-	
+	if request.is_ajax():
+		if request.method == 'POST':
+			form = ProfileForm(request.POST)
+			if(form.isValid):
+				form.save()
+		else:
+			return render_to_response('editprofile.html', {'form': form,})
+		
 def review(request):
 	if request.method == 'POST':
 		form = myForms.ReviewForm(request.POST)
@@ -168,3 +171,16 @@ def ajax_top_five(request):
 		data = {'results':movies}
 			
 		return render_to_response(template, data )
+		
+def login(request):
+	if request.POST:
+		print '2'
+		user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
+		if user != None and user.is_active:
+			auth.login(request, user)
+			return HttpResponseRedirect('/')
+		else: #invalid login or inactive account
+			return HttpResponseRedirect('/search/movie/invalid')
+	else: #request.GET
+		print '1'
+		return render_to_response('login.html', locals())
