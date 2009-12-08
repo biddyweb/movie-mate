@@ -7,6 +7,8 @@ from django.template.context import RequestContext
 from django.contrib import auth
 from django.http import HttpResponseRedirect
 
+
+
 def get_movie_info(mid):
 	try:
 		cursor.execute("""select m.name, m.year, m.avgRating, 
@@ -102,10 +104,27 @@ def person_page(request, pid):
 	cursor.close()
 	return render_to_response('person.html', locals())
 	
-def basic_search(request, type, query, count=10):
+def friend_page(request, user_id):
+	cursor = connection.cursor()
+	cursor.execute("""select f.name, f.city, f.state, f.school, 
+			f.age from Users f
+			where f.user_id = %s """ % user_id)
+	r = cursor.fetchone()
+	friend = {'name':r[0], 'city':r[1], 'state':r[2], 'school':r[3], 'age':r[4]}
+	
+	cursor.execute("""select f.name, f.user_id from Users f, isFriend i
+		where (i.uid1 = %s and f.user_id = i.uid2) or (i.uid2 = %s and f.user_id = uid1)""" % (user_id, user_id))
+	row = cursor.fetchall()
+	friends = []
+	for r in row:
+		friends.append({'name':r[0], 'id':r[1]})
+	
+	return render_to_response('friend.html', locals())
+	
+def basic_search(request, type, query, count=25):
 	if type == 'movie':
 		cursor = connection.cursor()
-		cursor.execute("""select m.mid, m.name, m.year, m.avgRating
+		cursor.execute("""select m.mid, m.name, m.year, m.MPAA, m.avgRating
 				from Movie m
 				where m.name like '%%"""+query+"""%%' 
 				order by m.numOfRatings desc limit 25""")
@@ -113,12 +132,23 @@ def basic_search(request, type, query, count=10):
 		numResults = cursor.rowcount
 		row = cursor.fetchall()
 		
+		movies = []
+		for r in row:
+			movies.append({'mid':r[0], 'name':r[1], 'year':r[2], 'MPAA':r[3], 'avgRating':r[4]})
+		return render_to_response('movieResults.html', locals())
+		
 	elif type == 'person':
 		cursor = connection.cursor()
-		cursor.execute("""select p.pid, p.name from Person p
+		cursor.execute("""select distinct p.name, p.pid from Person p
 				where p.name = '%s'""" % query)
 		numResults = cursor.rowcount
 		row = cursor.fetchmany(count)
+		
+		persons = []
+		for p in row:
+			persons.append({'pid':p[1], 'name':p[0]})
+		return render_to_response('personResults.html', locals())
+		
 	elif type == 'friend':
 		cursor = connection.cursor()
 		cursor.execute("""select u.user_id, u.name, u.login
@@ -128,36 +158,51 @@ def basic_search(request, type, query, count=10):
 				""")
 		numResults = cursor.rowcount
 		row = cursor.fetchmany(count)
-	
-	results = []
-	for r in row:
-		results.append({'type':type, 'id':r[0], 'name':r[1], 'data':r[2:]})
+		friends = []
+		for r in row:
+			friends.append({'user_id':r[0], 'name':r[1], 'login':r[2]})
+		return render_to_response("friendResults.html", locals())
 	
 	cursor.close()
 	numPages = int(ceil(numResults / 10.0))
 	return render_to_response('testresults.html', locals())
 
 def advance_search(request):
-	user, radio_btn, query, gt, lt = "", "", "", "", ""
+	#print request.POST
+	#user, radio_btn, query, gt, lt = "", "", "", "", ""
+	user = request.user
+
 	if request.POST:
-		if user.age < 13:
-			mpaa = 2
-		if user.age < 14:
-			mpaa = 3
-		elif user.age < 18:
-			mpaa = 4
-		elif user == None:
-			mpaa = 4
+		
+		post = request.POST
+		#radio_btn = int(post['searchOp'])
+		
+		
+		print post['queryy']
+		#print request.POST
+		
+		if user.is_authenticated():
+			if user.age < 13:
+				mpaa = 2
+			if user.age < 14:
+				mpaa = 3
+			elif user.age < 18:
+				mpaa = 4
+				
 		else:
 		    mpaa = 7
+		    
 		cursor = connection.cursor()
+		
 		if radio_btn == 1:   #Movie Title Search
+			
 			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre FROM Movie m, Genre g, isType i
-					where m.name LIKE '%%s%' and i.mid=m.mid and g.gid = i.gid and m.MPAA < %s""" % query, mpaa)
+					where m.name LIKE '%%s%%' and i.mid=m.mid and g.gid = i.gid and m.MPAA < %s""" % (query, mpaa))
 			row = cursor.fetchall()
 			movies = []
 			for r in row:
 				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
+			return render_to_response('movie.html', {'mid':'1025777'})
 			
 		elif radio_btn == 2:  #User Search
 			cursor.execute("""select u.user_id, u.username, u.name, u.age, u.state, u.city
@@ -243,9 +288,11 @@ def advance_search(request):
 			movies = []
 			for r in row:
 				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-			return render_to_response('testresults.html', locals())
+		
+		print "return"
+		return render_to_response('testresults.html', locals())
 	else: #GET
-	   return render_to_response('search.html', locals())
+		return render_to_response('search.html', locals())
 		   
 def edit_profile(request, user_id):
 	if request.is_ajax():
@@ -283,12 +330,30 @@ def ajax_top_five(request):
 		return render_to_response(template, data )
 		
 def login(request):
-	if request.POST:
+	#if request.POST:
 		user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
-		if user != None and user.is_active:
-			auth.login(request, user)
-			return HttpResponseRedirect('/')
-		else: #invalid login or inactive account
-			return HttpResponseRedirect('/search/movie/invalid')
-	else: #request.GET
-		return render_to_response('login.html', locals())
+		if user is not None:
+			if user.is_active:
+				auth.login(request, user)
+				return HttpResponseRedirect('/home')
+			else: #inactive account
+				error = "This account has been disabled."
+				return render_to_response('welcome.html', locals())
+		else: #invalid login
+			error = "Invalid username or password."
+			return render_to_response('welcome.html', locals())
+	
+		
+def logout(request):
+	auth.logout(request)
+	return HttpResponseRedirect('/')
+	
+	
+def welcome(request):
+	if request.user.is_authenticated():
+		return render_to_response('home.html', locals())
+	else:
+		return render_to_response('welcome.html', locals())
+	
+def home(request):
+	return render_to_response('home.html', locals())
