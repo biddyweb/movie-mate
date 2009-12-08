@@ -137,114 +137,116 @@ def basic_search(request, type, query, count=10):
 	numPages = int(ceil(numResults / 10.0))
 	return render_to_response('testresults.html', locals())
 
-def advance_search(request, user, radio_btn, query, gt, lt):
-	if user.age < 13:
-		mpaa = 2
-	if user.age < 14:
-		mpaa = 3
-	elif user.age < 18:
-		mpaa = 4
-	elif user == None:
-		mpaa = 4
-	else:
-	    mpaa = 7
-	cursor = connection.cursor()
-	if radio_btn == 1:   #Movie Title Search
-		cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre FROM Movie m, Genre g, isType i
-				where m.name LIKE '%%s%' and i.mid=m.mid and g.gid = i.gid and m.MPAA < %s""" % query, mpaa)
-		row = cursor.fetchall()
-		movies = []
-		for r in row:
-			movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-		
-	elif radio_btn == 2:  #User Search
-		cursor.execute("""select u.user_id, u.username, u.name, u.age, u.state, u.city
-				from Users u where u.username LIKE '%%s%' or u.name LIKE '%%s%'""" % query)
-		
-		row = cursor.fetchall()
-		user = []
-		for r in row:
-			user.append({'username':r[0], 'name':r[1],'age':r[1], 'state':r[1], 'city':r[2]})
-		
-	elif radio_btn == 3:  #Actor/Actress or Directors Search
-		cursor.execute("""select p.pid, p.name, p.age, p.gender
-				from Person p where p.name LIKE '%%s%'""" % query)
-		row = cursor.fetchall()
-		person = []
-		for r in row:
-			person.append({'name':r[0], 'age':r[1], 'gender':r[2]})
-		
-	elif radio_btn == 5:  #list of actors, actresses, or directors
-		quaryset = query.split(',')
-		
-		person = ''
-		for q in quaryset:
-			person += """p2.name = '%s' or """ % q
-		person = person.rstrip(' or ')
-		
-   
-		cursor.execute("""SELECT DISTINCT m.mid, m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-				FROM Movie m, Genre g, isType i, isInvolved iv, Person p 
-				WHERE m.mid = iv.mid AND p.pid = iv.pid AND i.mid = m.mid AND g.gid = i.gid and m.MPAA < %s AND p.pid IN 
-				(SELECT p2.pid FROM Person p2 WHERE %s""" % mpaa, person )
-		row = cursor.fetchall()
-		movies = []
-		for r in row:
-			movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-					   
-	elif radio_btn == 6:  #list of actors, actresses ALL INVOLVED IN MOVIE
-		quaryset = query.split(',')
-		
-		person = ''
-		for q in quaryset:
-			person += """p2.name = '%s' or """ % q
-		person = person.rstrip(' or ')
-
-		cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-				FROM Movie m, Genre g, isType i, isInvolved iv, Person p 
-				WHERE m.mid = iv.mid AND p.pid = iv.pid AND i.mid = m.mid AND g.gid = i.gid and m.MPAA < %s AND p.pid IN 
-				(SELECT p2.pid FROM Person p2 WHERE %s""" % mpaa, person )
-		
-		row = cursor.fetchall()
-		movies = []
-		for r in row:
-			movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-		
-	elif radio_btn == 7:  #one director, return actors and actresses
-		cursor.execute("""SELECT p.pid, p.name, p.age, p.gender, iv.role
-				FROM Person p, Movie m, isInvolved iv
-				WHERE p.pid = iv.pid and m.mid = iv.mid and (iv.role = 'Actor' or iv.role = 'Actress') and m.MPAA < %s and m.mid IN
-					(SELECT m2.mid 
-					FROM Person p2, Movie m2, isInvolved iv2 
-					WHERE m2.mid = iv2.mid and p2.pid = iv2.pid and p2.name = '%s' and iv2.role = 'Director'""" % mpaa, query)
-		
-	elif radio_btn == 8:  #Movies released in this year.
-		cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-				FROM Movie m, Genre g, isType i
-				WHERE m.year = '%s' and i.mid=m.mid and g.gid = i.gid and m.MPAA < %s""" % query, mpaa)
-		row = cursor.fetchall()
-		movies = []
-		for r in row:
-			movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-		
-	elif radio_btn == 9:  #Movies who's rating is in a range
-		cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-				FROM Movie m, Genre g, isType i
-				WHERE i.mid = m.mid and g.gid = i.gid and m.avgRating >= %s and m.avgRating <= %s and m.MPAA < %s""" % gt, lt, mpaa)
-		
-	elif radio_btn == 10:  #Top n rated movies.
-		cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-				FROM Movie m, Genre g, isType i
-				WHERE m.MPAA < %s
-				LIMIT '%s'""" % mpaa, query)
-		row = cursor.fetchall()
-		movies = []
-		for r in row:
-			movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-		
-	else:
-	   return HTTP404()
-
+def advance_search(request):
+	user, radio_btn, query, gt, lt = "", "", "", "", ""
+	if request.POST:
+		if user.age < 13:
+			mpaa = 2
+		if user.age < 14:
+			mpaa = 3
+		elif user.age < 18:
+			mpaa = 4
+		elif user == None:
+			mpaa = 4
+		else:
+		    mpaa = 7
+		cursor = connection.cursor()
+		if radio_btn == 1:   #Movie Title Search
+			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre FROM Movie m, Genre g, isType i
+					where m.name LIKE '%%s%' and i.mid=m.mid and g.gid = i.gid and m.MPAA < %s""" % query, mpaa)
+			row = cursor.fetchall()
+			movies = []
+			for r in row:
+				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
+			
+		elif radio_btn == 2:  #User Search
+			cursor.execute("""select u.user_id, u.username, u.name, u.age, u.state, u.city
+					from Users u where u.username LIKE '%%s%' or u.name LIKE '%%s%'""" % query)
+			
+			row = cursor.fetchall()
+			user = []
+			for r in row:
+				user.append({'username':r[0], 'name':r[1],'age':r[1], 'state':r[1], 'city':r[2]})
+			
+		elif radio_btn == 3:  #Actor/Actress or Directors Search
+			cursor.execute("""select p.pid, p.name, p.age, p.gender
+					from Person p where p.name LIKE '%%s%'""" % query)
+			row = cursor.fetchall()
+			person = []
+			for r in row:
+				person.append({'name':r[0], 'age':r[1], 'gender':r[2]})
+			
+		elif radio_btn == 5:  #list of actors, actresses, or directors
+			quaryset = query.split(',')
+			
+			person = ''
+			for q in quaryset:
+				person += """p2.name = '%s' or """ % q
+			person = person.rstrip(' or ')
+			
+	   
+			cursor.execute("""SELECT DISTINCT m.mid, m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
+					FROM Movie m, Genre g, isType i, isInvolved iv, Person p 
+					WHERE m.mid = iv.mid AND p.pid = iv.pid AND i.mid = m.mid AND g.gid = i.gid and m.MPAA < %s AND p.pid IN 
+					(SELECT p2.pid FROM Person p2 WHERE %s""" % mpaa, person )
+			row = cursor.fetchall()
+			movies = []
+			for r in row:
+				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
+						   
+		elif radio_btn == 6:  #list of actors, actresses ALL INVOLVED IN MOVIE
+			quaryset = query.split(',')
+			
+			person = ''
+			for q in quaryset:
+				person += """p2.name = '%s' or """ % q
+			person = person.rstrip(' or ')
+	
+			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
+					FROM Movie m, Genre g, isType i, isInvolved iv, Person p 
+					WHERE m.mid = iv.mid AND p.pid = iv.pid AND i.mid = m.mid AND g.gid = i.gid and m.MPAA < %s AND p.pid IN 
+					(SELECT p2.pid FROM Person p2 WHERE %s""" % mpaa, person )
+			
+			row = cursor.fetchall()
+			movies = []
+			for r in row:
+				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
+			
+		elif radio_btn == 7:  #one director, return actors and actresses
+			cursor.execute("""SELECT p.pid, p.name, p.age, p.gender, iv.role
+					FROM Person p, Movie m, isInvolved iv
+					WHERE p.pid = iv.pid and m.mid = iv.mid and (iv.role = 'Actor' or iv.role = 'Actress') and m.MPAA < %s and m.mid IN
+						(SELECT m2.mid 
+						FROM Person p2, Movie m2, isInvolved iv2 
+						WHERE m2.mid = iv2.mid and p2.pid = iv2.pid and p2.name = '%s' and iv2.role = 'Director'""" % mpaa, query)
+			
+		elif radio_btn == 8:  #Movies released in this year.
+			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
+					FROM Movie m, Genre g, isType i
+					WHERE m.year = '%s' and i.mid=m.mid and g.gid = i.gid and m.MPAA < %s""" % query, mpaa)
+			row = cursor.fetchall()
+			movies = []
+			for r in row:
+				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
+			
+		elif radio_btn == 9:  #Movies who's rating is in a range
+			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
+					FROM Movie m, Genre g, isType i
+					WHERE i.mid = m.mid and g.gid = i.gid and m.avgRating >= %s and m.avgRating <= %s and m.MPAA < %s""" % gt, lt, mpaa)
+			
+		elif radio_btn == 10:  #Top n rated movies.
+			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
+					FROM Movie m, Genre g, isType i
+					WHERE m.MPAA < %s
+					LIMIT '%s'""" % mpaa, query)
+			row = cursor.fetchall()
+			movies = []
+			for r in row:
+				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
+			return render_to_response('testresults.html', locals())
+	else: #GET
+	   return render_to_response('search.html', locals())
+		   
 def edit_profile(request, user_id):
 	if request.is_ajax():
 		if request.method == 'POST':
