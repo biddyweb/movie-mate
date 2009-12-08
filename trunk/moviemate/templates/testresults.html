@@ -2,9 +2,7 @@
 <head><title>Search results for a {{type}} search</title></head>
 <body>
 {{numResults}} total results on {{numPages}} pages.<br><br>
-{% for i in numPages|make_list %}
-{{i}} &nbsp;
-{% endfor %}
+
 {% for r in results %}
 	{{r.name}} || {{r.id}} || {{r.data}}
 	<hr>

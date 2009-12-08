@@ -3,7 +3,6 @@ from moviemate.settings import APP_PATH
 
 from moviemate import views
 
-from moviemate.urlsMap import *
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -22,12 +21,14 @@ urlpatterns = patterns('',
     #(r'^admin/login$', views.adminlogin),
     
     (r'^login$', views.login),
+    (r'^logout$', views.logout),
     
     (r'^movie/(?P<mid>\d+)$', views.movie_page),
-    (r'^$', root_view),
-    (r'^home/$', home),
+    (r'^$', views.welcome),
+    (r'^home$', views.home),
     
     (r'^person/(?P<pid>\d+)$', views.person_page),
+    (r'^friend/(?P<user_id>\d+)$', views.friend_page),
     
     #basic search
     (r'^search/(?P<type>(movie|person|friend))/(?P<query>.+)$', views.basic_search),

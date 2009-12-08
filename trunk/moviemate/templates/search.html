@@ -4,84 +4,97 @@
 		<div id="tabs">
 			<ul>
 				<li><a href="#tabs-1">Advanced Search</a></li>
-</ul>
+			</ul>
 			
 			
 			
 			<div id="tabs-1">
 			<h3>Search for</h3>
-			<table border="0" cellpadding="5" cellspacing="5">
-			<tr>
-				<td>Movie title</td>
-				<td><input type="radio" name="searchOp" value="1"></td>
-				<td><input type="text"></input></td>
-				
-			</tr>
-					<tr>
-				<td>User</td>
-				<td><input type="radio" name="searchOp" value="2"></td>
-				<td><input type="text"></input></td>
-				
-			</tr>
-						<tr>
-				<td>Actor/Actress and Directors</td>
-				<td><input type="radio" name="searchOp" value="3"></td>
-				<td><input type="text"></input></td>
-				
-			</tr>
-			</table>
-			<hr>
 			
 			<table border="0" cellpadding="5" cellspacing="5">
-			<tr>
-			<td>Movies with the following actors, actresses, or directors:</td>
-			<td><input type="radio" name="searchOp" value="4"></td>
-
-			<td><i>Separate actors, actresses, and directors by commas.</i></td>
-			</tr>
-			<tr>
-			<td colspan="3"><textarea name="all actors" cols="75" rows="5"></textarea></td>
-			</tr>
-						<tr>
-			<td>Movies with the following actors or actresses ONLY:</td>
-			<td><input type="radio" name="searchOp" value="4"></td>
-
-			<td><i>Separate actors and actresses by commas.</i></td>
-			</tr>
-			<tr>
-			<td colspan="3"><textarea name="all actors" cols="75" rows="5"></textarea></td>
-			</tr>
-						<tr>
-				<td>Display actors or actresses who have worked with the following director</td>
-				<td><input type="radio" name="searchOp" value="3"></td>
-				<td><input type="text"></input></td>
+			<form action="" method="POST">
+				<tr>
+					<td>Movie title</td>
+					<td><input type="radio" name="searchOp" value="1"></td>
+					<td><input type="text" name="queryy"></input></td>
 				
-			</tr>
+				</tr>
+				<tr>
+					<td>User</td>
+					<td><input type="radio" name="searchOp" value="2"></td>
+					<td><input type="text" name="query"></input></td>
+				
+				</tr>
+				<tr>
+					<td>Actor/Actress and Directors</td>
+					<td><input type="radio" name="searchOp" value="3"></td>
+					<td><input type="text" name="query"></input></td>
+					<td><input type="submit" value="Search"></td>
+				
+				</tr>
+			</form>
 			</table>
+			<hr>
+			<b>OR</b>
+			<table border="0" cellpadding="5" cellspacing="5">
+			<form action="" method="POST">
+				<tr>
+					<td>Movies with the following actors, actresses, or directors:</td>
+					<td><input type="radio" name="searchOp" value="4"></td>
+
+					<td><i>Separate actors, actresses, and directors by commas.</i></td>
+				</tr>
+				<tr>
+					<td colspan="3"><textarea name="all actors" cols="75" rows="5" name="query"></textarea></td>
+				</tr>
+				<tr>
+					<td>Movies with the following actors or actresses ONLY:</td>
+					<td><input type="radio" name="searchOp" value="4" name="query"></td>
+
+					<td><i>Separate actors and actresses by commas.</i></td>
+				</tr>
+				<tr>
+					<td colspan="3"><textarea name="all actors" cols="75" rows="5" name="query"></textarea></td>
+				</tr>
+				<tr>
+					<td>Display actors or actresses who have worked with the following director</td>
+					<td><input type="radio" name="searchOp" value="3"></td>
+					<td><input type="text" name="query"></input></td>
+					<td><input type="submit" value="Search"></td>
+				
+				</tr>
+			</table>
+			</form>
 			
 			<hr>
+			<b>OR</b>
 			<table border="0" cellpadding="5" cellspacing="5">
-						<tr>
-				<td>Movies released in year:</td>
-				<td><input type="radio" name="searchOp" value="5"></td>
-				<td><input type="text"></input></td>
+			<form action="" method="POST">
+				<tr>
+					<td>Movies released in year:</td>
+					<td><input type="radio" name="searchOp" value="5"></td>
+					<td><input type="text" name="query"></input></td>
 				
-			</tr>
-									<tr>
-				<td>Movies with a rating:</td>
-				<td><input type="radio" name="searchOp" value="6"></td>
-				<td>greater than <input type="text" size="2"></input> <BR>
-				but less than <input type="text" size="2"></input></td>
+				</tr>
+				<tr>
+					<td>Movies with a rating:</td>
+					<td><input type="radio" name="searchOp" value="6"></td>
+					<td>greater than <input type="text" size="2" name="query"></input>
+					but less than <input type="text" size="2" name="query"></input></td>
 				
-			</tr>
-									<tr>
-				<td>Display the top</td>
-				<td><input type="radio" name="searchOp" value="7"></td>
-				<td><input type="text" size="2"></input> movies!</td>
+				</tr>
+				<tr>
+					<td>Display the top</td>
+					<td><input type="radio" name="searchOp" value="7"></td>
+					<td><input type="text" size="2" name="query"></input> movies</td>
+					<td><input type="submit" value="Search"></td>
 				
-			</tr>
+				</tr>
+			</form>
 			</table>
-			</div>
+			</form>
+		</div>
+		</div>
 
 
 {% endblock %}
