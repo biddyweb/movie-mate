@@ -19,6 +19,9 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     (r'^admin/(.*)', admin.site.root),
+    #(r'^admin/login$', views.adminlogin),
+    
+    (r'^login$', views.login),
     
     (r'^movie/(?P<mid>\d+)$', views.movie_page),
     (r'^$', root_view),
@@ -31,7 +34,7 @@ urlpatterns = patterns('',
     
     url(r'^top5$', views.ajax_top_five, name='demo_ajax_top_five'),
     
-    (r'^review/$', views.review),
+    url(r'^review/$', views.review, name='showWriteReview'),
     
     #to make static files work
     (r'^files/(?P<path>.*)$',

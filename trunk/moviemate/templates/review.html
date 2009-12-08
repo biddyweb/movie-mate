@@ -1,21 +1,10 @@
-{% extends "index.html" %}
-{% block title %} {{ movie.name }} ({{movie.year}}){% endblock %}
-{% block scripts %}
-	<script type="text/javascript">
-		$(function(){
-			$('#tabs').tabs();
-		});
-	</script>
-{% endblock %}
 
-{% block content %}
-	<div>
-	<h3>{{ movie.name }} ({{movie.year}})</h3>
-	<form action="." method="POST">
-        <table>
-            {{ form.as_table }}
-        </table>
-        <p><input type="submit" value="Submit"></p>
-    </form>
-    </div>
-{% endblock %}
+	
+		
+		<form action="." method="POST">
+			<table>
+				{{ form.as_table }}
+			</table>
+			<p><input type="submit" value="Submit"></p>
+		</form>
+

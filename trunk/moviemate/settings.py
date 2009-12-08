@@ -19,6 +19,11 @@ DATABASE_USER = 'cs445_2_f09'
 DATABASE_PASSWORD = 'gwalter'
 DATABASE_HOST = '127.0.0.1'
 DATABASE_PORT = '3307'
+#DATABASE_NAME = 'moviemate2'
+#DATABASE_USER = 'cs320dev'
+#DATABASE_PASSWORD = 'mysqlsux'
+#DATABASE_HOST = '/tmp/mysql.sock'
+#DATABASE_PORT = '3306'
 
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -89,9 +94,10 @@ TEMPLATE_DIRS = (
 )
 
 AUTHENTICATION_BACKENDS = (
-#    "moviemate.authentication.AuthenticationBackend",
+    "moviemate.authentication.AuthenticationBackend",
     "django.contrib.auth.backends.ModelBackend",
 )
+CUSTOM_USER_MODEL = 'moviemate.models.TestUsers'
 
 INSTALLED_APPS = (
     'moviemate',

@@ -14,6 +14,14 @@
 					});
 				}
 			});
+			function writeReviewShow() {
+				$('#writeReview').html('').load('{% url showWriteReview %}');
+				$('#writeReview').show();
+			};
+			$('#writeReview').hide();
+			$('#reviewLink').toggle(writeReviewShow,
+				function() {$('#writeReview').hide();});
+			
 		});
 	</script>
 
@@ -110,7 +118,8 @@
 		</div> <!-- tabs2 -->
 		
 		<div id="tabs-3">
-			<p><a href="/review/">write a review</a></p>
+			<p><a href="javascript:void(0);" id="reviewLink">Add your review!</a></p>
+			<div id="writeReview" hidden="true">Hay</div>
 			<h3>Member Reviews</h3>
 			<div id="reviewBox">
 				
