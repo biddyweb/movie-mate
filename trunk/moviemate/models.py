@@ -166,10 +166,10 @@ class Updates(models.Model):
 	def __unicode__(self):
 		return u'[%s] performed [%s] on [%s]' % (self.up_id, self.action, self.tmstamp)
 
-class Users(User): 
-        id = models.IntegerField(primary_key=True, db_column='user_id')
+class Users(models.Model): 
+        id = models.IntegerField(unique=True, db_column='user_id')
         #id = models.AutoField(primary_key=True, db_column='user_id')
-	username = models.CharField(max_length=255, unique=True, db_column='login')
+	username = models.CharField(primary_key=True, max_length=255, db_column='login')
         password = models.CharField(max_length=255, blank=True, db_column='psword')
         name = models.CharField(max_length=255, blank=True)
         age = models.IntegerField(null=True, blank=True)
@@ -179,7 +179,11 @@ class Users(User):
         gender = models.CharField(max_length=3, blank=True)
         school = models.CharField(max_length=255, blank=True)
         fantasybudget = models.FloatField(null=True, db_column='fantasyBudget', blank=True) # Field name made lowercase.
-        objects = UserManager()
+	is_active = models.IntegerField(default=1, db_column='isActive')
+	is_superuser = models.IntegerField(db_column='isAdmin')
+	#user_ptr_id = models.OneToOneField('Users', to_field='user_id', db_column='user_ptr')
+	
+        #objects = UserManager()
         class Meta:
                 db_table = u'Users'
                 
