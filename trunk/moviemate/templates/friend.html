@@ -1,0 +1,68 @@
+{% extends 'index.html' %}
+{% block content %}
+
+<!-- Tabs -->
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Updates</a></li>
+				<li><a href="#tabs-2">Info</a></li>
+			</ul>
+			<div id="tabs-1">
+			<img class="profileImg" alt="{{friend.name}}" src="/files/not.jpg"/><br />
+			<span class="author">{{friend.name}}
+			<BR><a href=""><span class="small">
+			Friend this person <img src="star.png" border="0"></span></a></span><BR><BR>
+
+			
+			
+			<br style="clear: both;"/></div>
+			
+			
+			
+			<div id="tabs-2">
+			<h3>Info</h3>
+			<table border="0" cellpadding="5" cellspacing="5">
+			<tr>
+				<td>Location</td>
+				<td>{{friend.city}}, {{friend.state}}</td>
+				
+			</tr>
+			<tr>
+				<td>School</td>
+				<td>{{friend.school}}</td>
+			</tr>			<tr>
+				<td>AGE</td>
+				<td>{{friend.age}}</td>
+			</tr>
+			<tr>
+				<td>Likes these movies:</td>
+				<td>Interest 1, Interest 2, Interest 3, Interest 4, Interest 5, Interest 6, Interest 7, Interest 8, Interest 9, Interest 10, Interest 11, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest</td>
+			</tr>
+			<tr>
+				<td>Likes these people: </td>
+				<td>Interest 1, Interest 2, Interest 3, Interest 4, Interest 5, Interest 6, Interest 7, Interest 8, Interest 9, Interest 10, Interest 11, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest</td>
+			</tr>
+			<tr>
+				<td>Likes these genres</td>
+				<td>Interest 1, Interest 2, Interest 3, Interest 4, Interest 5, Interest 6, Interest 7, Interest 8, Interest 9, Interest 10, Interest 11, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest, Interest</td>
+			</tr>			
+			<tr>
+				<td>Is friends with:</td>
+				</tr>
+				<tr>
+				<td>
+				{% for f in friends %}
+				
+				<a href="/friend/{{f.id}}">{{f.name}}</a> &nbsp; | &nbsp;
+				
+				
+				
+				{% endfor %}
+				</td>
+				</tr>
+			</table>
+			</div>
+
+			
+</div>
+{% endblock %}

@@ -1,0 +1,31 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Results</a></li>
+</ul>
+			
+			
+			
+			<div id="tabs-1">
+			<h3>{{numResults}} results.</h3>
+		<table border="0" cellpadding="5" cellspacing="5">
+		{% for p in persons %}
+		<tr>
+		<td>Name</td>
+
+		</tr>
+		<tr>
+		<td><b><a href="/person/{{pid}}" target="_self">{{p.name}}</a></b></td>
+		</tr>
+		{% endfor %}
+		</table>
+			</div>
+
+			
+</div>
+
+
+{% endblock %}
