@@ -1,0 +1,34 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Results</a></li>
+</ul>
+			
+			
+			
+			<div id="tabs-1">
+			<h3>{{numResults}} results.</h3>
+		<table border="0" cellpadding="5" cellspacing="5">
+				<tr>
+		<td>Name</td>
+		<td>Username</td>
+
+		</tr>
+		{% for p in friends %}
+		
+		<tr>
+		<td><b><a href="/friend/{{p.user_id}}" target="_self">{{p.name}}</a></b></td>
+		<td>{{p.login}}</td>
+		</tr>
+		{% endfor %}
+		</table>
+			</div>
+
+			
+</div>
+
+
+{% endblock %}

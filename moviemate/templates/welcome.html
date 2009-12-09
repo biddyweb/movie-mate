@@ -1,0 +1,116 @@
+{% extends 'index.html' %}
+{% block title %}
+	Welcome to MovieMate
+{% endblock %}
+
+{% block scripts %}
+	<script type="text/javascript">
+	$(document).ready(function() {
+			$('#login').hide();
+			$('#register').hide();
+			$('.showLogin').click(function(){
+				$('#login').toggle();
+				$('#register').hide();
+			});
+			$('.showRegister').click(function() {
+					$('#register').toggle();
+					$('#login').hide();
+			});
+	});
+	</script>
+{% endblock %}
+	
+	{% block content %}
+	<!-- Tabs -->
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Welcome!</a></li>
+
+			</ul>
+			<div id="tabs-1">
+				<table border="0" cellpadding="1" cellspacing="1">
+					<tr align="center" colspan="2"><center><h3>Welcome to MovieMate</h3></center></tr>
+					<tr align="center" colspan="2"><center>Matching friends and films alike since 2009</center></tr>
+					<tr>
+			
+						<td><center><a href="javascript::void(0);"><span class="big showLogin">Login</span></a>&nbsp;&nbsp;&nbsp;&nbsp;
+							<a href="javascript::void(0);"><span class="big showRegister">Register</span></a></center>
+						</td>
+						{% if error %}
+							</tr><tr><td>{{error}}</td></tr>
+						{% else %}
+					</tr>
+						{% endif %}
+				</table>
+			</div> <!-- tabs1 -->
+			
+			<div id="login">
+				<hr>
+				<center><h3>Enter your credentials:</h3></center>
+				<form name="input" action="/login" method="post">
+					<table border="0" cellpadding=3 cellspacing=3>
+	
+						<tr>
+							<td><b>Username:</b>
+							<input type="text" name="username" /></td>
+						</tr>
+						<tr>
+		
+							<td><b>Password :</b>
+							<input type="password" name="password" />
+							<input type="submit" value="Log in" />
+							</td>
+						</tr>
+					</table>
+				</form>
+			</div> <!-- login -->
+			
+			<div id="register">
+				<hr>
+				<h3>Enter the following information:</h3>
+				<form name="register" action="/register" method="post">
+					<table border="0" cellpadding="3" cellspacing="3">
+						<tr>
+							<td><b>E-Mail address:</b></td>
+							<td><input type="text" name="username"></input></td>
+				
+						</tr>
+						<tr>
+							<td><b>Desired password:</b></td>
+							<td><input type="text" name="password"></input></td>
+				
+						</tr>
+						<tr>
+							<td><b>Gender:</b></td>
+							<td><input type="text" name="gender"></input></td>
+				
+						</tr>
+						<tr>
+							<td><b>School:</b></td>
+							<td><input type="text" name="school"></input></td>
+				
+						</tr>
+
+						<tr>
+							<td><b>City:</b></td>
+							<td><input type="text" name="city"></input></td>
+				
+						</tr>
+						<tr>
+							<td><b>State:</b></td>
+							<td><input type="text" name="	state"></input></td>
+				
+						</tr>
+
+						<tr>
+							<td colspan="2">				
+								<center><input type="submit" value="Register" /></center>
+							</td>
+
+						</tr>
+
+					</table>
+				</form>
+			</div> <!-- register -->
+		</div> <!-- tabs -->
+{% endblock %}

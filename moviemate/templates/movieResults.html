@@ -1,0 +1,40 @@
+{% extends 'index.html' %}
+
+{% block content %}
+
+
+<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Results</a></li>
+</ul>
+			
+			
+			
+			<div id="tabs-1">
+			<h3>{{numResults}} results returned</h3>
+		<table border="0" cellpadding="5" cellspacing="5">
+		<tr>
+		<td>Movie Title</td>
+		<td>Year</td>
+		<td>MPAA</td>
+		<td>Rating</td>
+		</tr>
+		{% for m in movies %}
+		<tr>
+		<td><b><a href="/movie/{{m.mid}}" target="_self">{{m.name}}</a></b></td>
+		<td>{{m.year}}</td>
+		<td>{{m.MPAA}}</td>
+		<td>{{m.avgRating}}/10</td>
+		</tr>
+		{% endfor %}
+		</table>
+			</div>
+
+			
+</div>
+
+
+
+
+
+{% endblock %}
