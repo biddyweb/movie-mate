@@ -166,29 +166,37 @@ class Updates(models.Model):
 	def __unicode__(self):
 		return u'[%s] performed [%s] on [%s]' % (self.up_id, self.action, self.tmstamp)
 
+class auth_user_ext(User):
+    name = models.CharField(max_length=255, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    country = models.CharField(max_length=255, blank=True)
+    state = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=255, blank=True)
+    gender = models.CharField(max_length=3, blank=True)
+    school = models.CharField(max_length=255, blank=True)
+    
+    objects = UserManager()
+
 class Users(models.Model): 
-        id = models.IntegerField(unique=True, db_column='user_id')
-        #id = models.AutoField(primary_key=True, db_column='user_id')
-	username = models.CharField(primary_key=True, max_length=255, db_column='login')
-        password = models.CharField(max_length=255, blank=True, db_column='psword')
-        name = models.CharField(max_length=255, blank=True)
-        age = models.IntegerField(null=True, blank=True)
-        country = models.CharField(max_length=255, blank=True)
-        state = models.CharField(max_length=255, blank=True)
-        city = models.CharField(max_length=255, blank=True)
-        gender = models.CharField(max_length=3, blank=True)
-        school = models.CharField(max_length=255, blank=True)
-        fantasybudget = models.FloatField(null=True, db_column='fantasyBudget', blank=True) # Field name made lowercase.
-	is_active = models.IntegerField(default=1, db_column='isActive')
-	is_superuser = models.IntegerField(db_column='isAdmin')
-	#user_ptr_id = models.OneToOneField('Users', to_field='user_id', db_column='user_ptr')
+    user_id = models.IntegerField(unique=True)
+    isAdmin = models.BooleanField()
+    isActive = models.BooleanField()
+    login = models.CharField(primary_key=True, max_length=255)
+    psword = models.CharField(max_length=255, blank=True)
+    name = models.CharField(max_length=255, blank=True)
+    age = models.IntegerField(null=True, blank=True)
+    country = models.CharField(max_length=255, blank=True)
+    state = models.CharField(max_length=255, blank=True)
+    city = models.CharField(max_length=255, blank=True)
+    gender = models.CharField(max_length=3, blank=True)
+    school = models.CharField(max_length=255, blank=True)
+    fantasyBudget = models.FloatField(null=True, blank=True) # Field name made lowercase.
 	
-        #objects = UserManager()
-        class Meta:
-                db_table = u'Users'
+    class Meta:
+        db_table = u'Users'
                 
         def __unicode__(self):
-                return self.email
+            return self.login
 		
             
 class Choosetype(models.Model):
