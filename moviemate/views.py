@@ -1,4 +1,5 @@
 from moviemate import models
+from moviemate import queries
 from moviemate import forms as myForms
 from django.shortcuts import render_to_response
 from django.db import connection, transaction
@@ -175,34 +176,30 @@ def advance_search(request):
 	if request.POST:
 		
 		post = request.POST
-		#radio_btn = int(post['searchOp'])
 		
-		
-		print post['queryy']
 		#print request.POST
 		
-		if user.is_authenticated():
-			if user.age < 13:
-				mpaa = 2
-			if user.age < 14:
-				mpaa = 3
-			elif user.age < 18:
-				mpaa = 4
-				
-		else:
-		    mpaa = 7
-		    
+		#if user.is_authenticated():
+		#	if user.age < 13:
+		#		mpaa = 2
+		#	if user.age < 14:
+		#		mpaa = 3
+		#	elif user.age < 18:
+		#		mpaa = 4		
+		#else:
+		#    mpaa = 7
+		
+		mpaa = 7
 		cursor = connection.cursor()
 		
-		if radio_btn == 1:   #Movie Title Search
+		if post['searchOp'] == '1':   #Movie Title Search
 			
-			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre FROM Movie m, Genre g, isType i
-					where m.name LIKE '%%s%%' and i.mid=m.mid and g.gid = i.gid and m.MPAA < %s""" % (query, mpaa))
-			row = cursor.fetchall()
+			row = queries.find_movie_by_title(post['title'], mpaa)
 			movies = []
 			for r in row:
-				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-			return render_to_response('movie.html', {'mid':'1025777'})
+				movies.append({'mid':r[0], 'name':r[1], 'year':r[2], 'avgRating':r[3], 'numOfRatings':r[4], 'MPAA':r[5]})
+			numResults = len(movies)
+			return render_to_response('movieResults.html', locals())
 			
 		elif radio_btn == 2:  #User Search
 			cursor.execute("""select u.user_id, u.username, u.name, u.age, u.state, u.city
