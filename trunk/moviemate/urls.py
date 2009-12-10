@@ -20,8 +20,8 @@ urlpatterns = patterns('',
     (r'^admin/(.*)', admin.site.root),
     #(r'^admin/login$', views.adminlogin),
     
-    (r'^login$', views.login),
-    (r'^logout$', views.logout),
+    (r'^login/$', views.myLogin),
+    (r'^logout/$', views.myLogout),
     
     (r'^movie/(?P<mid>\d+)$', views.movie_page),
     (r'^$', views.welcome),

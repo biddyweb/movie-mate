@@ -4,7 +4,7 @@ from django.shortcuts import render_to_response
 from django.db import connection, transaction
 from math import ceil
 from django.template.context import RequestContext
-from django.contrib import auth
+from django.contrib.auth import authenticate, login, logout
 from django.http import HttpResponseRedirect
 
 
@@ -329,12 +329,12 @@ def ajax_top_five(request):
 			
 		return render_to_response(template, data )
 		
-def login(request):
-	#if request.POST:
-		user = auth.authenticate(username=request.POST['username'], password=request.POST['password'])
+def myLogin(request):
+	if request.method == 'POST':
+		user = authenticate(username=request.POST['username'], password=request.POST['password'])
 		if user is not None:
 			if user.is_active:
-				auth.login(request, user)
+				login(request, user)
 				return HttpResponseRedirect('/home')
 			else: #inactive account
 				error = "This account has been disabled."
@@ -342,10 +342,12 @@ def login(request):
 		else: #invalid login
 			error = "Invalid username or password."
 			return render_to_response('welcome.html', locals())
+	else:
+		return render_to_response('login.html')
 	
 		
-def logout(request):
-	auth.logout(request)
+def myLogout(request):
+	logout(request)
 	return HttpResponseRedirect('/')
 	
 	
