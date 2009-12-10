@@ -28,13 +28,14 @@ def remove_friend(user_id1, user_id2):
     transaction.commit_unless_managed()
 
 def find_movie_by_title(title, mpaa=None):
-    query = "SELECT * FROM Movie m WHERE m.name LIKE '%s%%%%'" % (title)
+    query = "SELECT m.mid, m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA FROM Movie m WHERE m.name LIKE '%s%%%%'" % (title)
     if mpaa <> None:
         query += ' and m.MPAA < %s;' % (mpaa)
     else:
         query += ';'
     cursor.execute("""%s""" % (query))
-    return cursor.fetchall()
+    row = cursor.fetchall()
+    return row
 
 def find_movie_by_rating(rating1, rating2=None, mpaa=None):
     query = 'SELECT * FROM Movie m WHERE m.avgRating '

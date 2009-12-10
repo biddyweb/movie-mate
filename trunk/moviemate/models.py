@@ -176,6 +176,13 @@ class auth_user_ext(User):
     school = models.CharField(max_length=255, blank=True)
     
     objects = UserManager()
+    
+    class Meta:
+        verbose_name = _('user_ext')
+        verbose_name_plural = _('users_ext')
+        
+        def __unicode__(self):
+            return User.username
 
 class Users(models.Model): 
     user_id = models.IntegerField(unique=True)
@@ -309,12 +316,12 @@ admin.site.register(Rates)
 admin.site.register(Ratesfmovie)
 admin.site.register(Review)
 admin.site.register(Updates)
+admin.site.register(auth_user_ext)
 admin.site.register(Users)
 admin.site.register(Choosetype)
 admin.site.register(Createfmovie)
 admin.site.register(Hasupdate)
 admin.site.register(Hirescast)
-
 admin.site.register(Hiresdirect)
 admin.site.register(Isfriend)
 admin.site.register(Isinvolved)
