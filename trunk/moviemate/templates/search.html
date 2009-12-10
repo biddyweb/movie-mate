@@ -11,11 +11,11 @@
 			<div id="tabs-1">
 			<h3>Search for</h3>
 			
-			<table border="0" cellpadding="5" cellspacing="5">
 			<form action="" method="POST">
+			<table border="0" cellpadding="5" cellspacing="5">
 				<tr>
 					<td>Movie title</td>
-					<td><input type="radio" name="searchOp" value="1"></td>
+					<td><input type="radio" name="searchOp" value="1" checked></td>
 					<td><input type="text" name="title"></input></td>
 				
 				</tr>
@@ -28,19 +28,19 @@
 				<tr>
 					<td>Actor/Actress and Directors</td>
 					<td><input type="radio" name="searchOp" value="3"></td>
-					<td><input type="text" name="query"></input></td>
+					<td><input type="text" name="findPerson"></input></td>
 					<td><input type="submit" value="Search"></td>
 				
 				</tr>
-			</form>
 			</table>
+			</form>
 			<hr>
 			<b>OR</b>
-			<table border="0" cellpadding="5" cellspacing="5">
 			<form action="" method="POST">
+			<table border="0" cellpadding="5" cellspacing="5">
 				<tr>
 					<td>Movies with the following actors, actresses, or directors:</td>
-					<td><input type="radio" name="searchOp" value="4"></td>
+					<td><input type="radio" name="searchOp" value="4" checked></td>
 
 					<td><i>Separate actors, actresses, and directors by commas.</i></td>
 				</tr>
@@ -49,7 +49,7 @@
 				</tr>
 				<tr>
 					<td>Movies with the following actors or actresses ONLY:</td>
-					<td><input type="radio" name="searchOp" value="4" name="query"></td>
+					<td><input type="radio" name="searchOp" value="5" name="query"></td>
 
 					<td><i>Separate actors and actresses by commas.</i></td>
 				</tr>
@@ -58,39 +58,38 @@
 				</tr>
 				<tr>
 					<td>Display actors or actresses who have worked with the following director</td>
-					<td><input type="radio" name="searchOp" value="3"></td>
+					<td><input type="radio" name="searchOp" value="6"></td>
 					<td><input type="text" name="query"></input></td>
 					<td><input type="submit" value="Search"></td>
 				
 				</tr>
 			</table>
 			</form>
-			
 			<hr>
 			<b>OR</b>
-			<table border="0" cellpadding="5" cellspacing="5">
 			<form action="" method="POST">
+			<table border="0" cellpadding="5" cellspacing="5">
 				<tr>
 					<td>Movies released in year:</td>
-					<td><input type="radio" name="searchOp" value="5"></td>
-					<td><input type="text" name="query"></input></td>
+					<td><input type="radio" name="searchOp" value="7" checked></td>
+					<td>From <input type="text" size="4" name="year1"></input>
+					to (optional) <input type="text" size="4" name="year2"></input></td>
 				
 				</tr>
 				<tr>
 					<td>Movies with a rating:</td>
-					<td><input type="radio" name="searchOp" value="6"></td>
-					<td>greater than <input type="text" size="2" name="query"></input>
-					but less than <input type="text" size="2" name="query"></input></td>
+					<td><input type="radio" name="searchOp" value="8"></td>
+					<td>From <input type="text" size="3" name="rating1"></input>
+					to (optional) <input type="text" size="3" name="rating2"></input></td>
 				
 				</tr>
 				<tr>
 					<td>Display the top</td>
-					<td><input type="radio" name="searchOp" value="7"></td>
-					<td><input type="text" size="2" name="query"></input> movies</td>
+					<td><input type="radio" name="searchOp" value="9"></td>
+					<td><input type="text" size="2" name="value_k"></input> movies</td>
 					<td><input type="submit" value="Search"></td>
 				
 				</tr>
-			</form>
 			</table>
 			</form>
 		</div>

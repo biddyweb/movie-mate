@@ -1,4 +1,4 @@
-from moviemate import models
+from moviemate.models import auth_user_ext, Users
 from moviemate import queries
 from moviemate import forms as myForms
 from django.shortcuts import render_to_response
@@ -170,20 +170,26 @@ def basic_search(request, type, query, count=25):
 
 def advance_search(request):
 
-	user = request.user
+	db_user = Users.objects.get(user_id=request.user.get_profile().db_user)
 
 	if request.POST:
 		post = request.POST		
-		if user.is_authenticated():
-			mpaa = 7
-		#	if user.age < 13:
-		#		mpaa = 2
-		#	if user.age < 14:
-		#		mpaa = 3
-		#	elif user.age < 18:
-		#		mpaa = 4		
+		if request.user.is_authenticated():
+			#MPAA G, PG, PG-13, NC-17, R, NR, ADULT
+			if db_user.age < 10:
+				mpaa = 1
+			elif db_user.age < 13:
+				mpaa = 2
+			elif db_user.age < 17:
+				mpaa = 3
+			elif db_user.age < 18:
+				mpaa = 4
+			elif db_user.age < 19:
+				mpaa = 5
+			else:
+				mpaa = 7
 		else:
-		    mpaa = 3
+		    mpaa = 1
 		    
 		cursor = connection.cursor()
 		
@@ -196,23 +202,26 @@ def advance_search(request):
 			numResults = len(movies)
 			return render_to_response('movieResults.html', locals())
 			
-		elif radio_btn == 2:  #User Search
+		elif post['searchOp'] == '2':  #User Search
 			
-			row = queries.find_user(post['findUser'], mpaa)
+			row = queries.find_user(post['findUser'])
 			friends = []
 			for r in row:
 				friends.append({'user_id':r[0], 'login':r[1], 'name':r[2]})
+			numResults = len(friends)
 			return render_to_response('friendResults.html', locals())
-			
-		elif radio_btn == 3:  #Actor/Actress or Directors Search
-			cursor.execute("""select p.pid, p.name, p.age, p.gender
-					from Person p where p.name LIKE '%%s%'""" % query)
-			row = cursor.fetchall()
-			person = []
+		
+		####
+		elif post['searchOp'] == '3':  #Actor/Actress or Directors Search
+			row = queries.find_person(post['findPerson'])
+			persons = []
 			for r in row:
-				person.append({'name':r[0], 'age':r[1], 'gender':r[2]})
+				persons.append({'pid':r[0], 'name':r[1]})
+			numResults = len(persons)
+			return render_to_response('personResults.html', locals())
 			
-		elif radio_btn == 5:  #list of actors, actresses, or directors
+		####
+		elif post['searchOp'] == '4':  #list of actors, actresses, or directors
 			quaryset = query.split(',')
 			
 			person = ''
@@ -229,8 +238,9 @@ def advance_search(request):
 			movies = []
 			for r in row:
 				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-						   
-		elif radio_btn == 6:  #list of actors, actresses ALL INVOLVED IN MOVIE
+		
+		####				   
+		elif post['searchOp'] == '5':  #list of actors, actresses ALL INVOLVED IN MOVIE
 			quaryset = query.split(',')
 			
 			person = ''
@@ -247,42 +257,65 @@ def advance_search(request):
 			movies = []
 			for r in row:
 				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-			
-		elif radio_btn == 7:  #one director, return actors and actresses
+		
+		####	
+		elif post['searchOp'] == '6':  #one director, return actors and actresses
 			cursor.execute("""SELECT p.pid, p.name, p.age, p.gender, iv.role
 					FROM Person p, Movie m, isInvolved iv
 					WHERE p.pid = iv.pid and m.mid = iv.mid and (iv.role = 'Actor' or iv.role = 'Actress') and m.MPAA < %s and m.mid IN
 						(SELECT m2.mid 
 						FROM Person p2, Movie m2, isInvolved iv2 
 						WHERE m2.mid = iv2.mid and p2.pid = iv2.pid and p2.name = '%s' and iv2.role = 'Director'""" % mpaa, query)
-			
-		elif radio_btn == 8:  #Movies released in this year.
-			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-					FROM Movie m, Genre g, isType i
-					WHERE m.year = '%s' and i.mid=m.mid and g.gid = i.gid and m.MPAA < %s""" % query, mpaa)
-			row = cursor.fetchall()
-			movies = []
-			for r in row:
-				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
-			
-		elif radio_btn == 9:  #Movies who's rating is in a range
-			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-					FROM Movie m, Genre g, isType i
-					WHERE i.mid = m.mid and g.gid = i.gid and m.avgRating >= %s and m.avgRating <= %s and m.MPAA < %s""" % gt, lt, mpaa)
-			
-		elif radio_btn == 10:  #Top n rated movies.
-			cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-					FROM Movie m, Genre g, isType i
-					WHERE m.MPAA < %s
-					LIMIT '%s'""" % mpaa, query)
-			row = cursor.fetchall()
-			movies = []
-			for r in row:
-				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
 		
-		print "return"
-		return render_to_response('testresults.html', locals())
-	else: #GET
+		####
+		elif post['searchOp'] == '7':  #Movies released in this year.
+			year1 = post['year1'];
+			year2 = post['year2'];
+			if year2 == '':
+				year2 = None
+			elif year2 < year1:
+			    temp = year2
+			    year2 = year1
+			    year1 = temp
+			
+			row = queries.find_movie_by_year(year1, year2, mpaa)
+			movies = []
+			for r in row:
+				movies.append({'mid':r[0], 'name':r[1], 'year':r[2], 'avgRating':r[3], 'numOfRatings':r[4], 'MPAA':r[5]})
+			numResults = len(movies)
+			return render_to_response('movieResults.html', locals())
+		
+		####
+		elif post['searchOp'] == '8':  #Movies who's rating is in a range
+			rating1 = post['rating1'];
+			rating2 = post['rating2'];
+			if rating2 == '':
+				rating1 = float(rating1)
+				rating2 = None
+			else:
+				rating1 = float(rating1)
+				rating2 = float(rating2)
+				if rating2 < rating1:
+					temp = rating2
+			    	rating2 = rating1
+			    	rating1 = temp
+			
+			row = queries.find_movie_by_rating(rating1, rating2, mpaa)
+			movies = []
+			for r in row:
+				movies.append({'mid':r[0], 'name':r[1], 'year':r[2], 'avgRating':r[3], 'numOfRatings':r[4], 'MPAA':r[5]})
+			numResults = len(movies)
+			return render_to_response('movieResults.html', locals())
+		
+		####	
+		elif post['searchOp'] == '9':  #Top n rated movies.
+			row = queries.top_k_search(post['value_k'], mpaa)
+			movies = []
+			for r in row:
+				movies.append({'mid':r[0], 'name':r[1], 'year':r[2], 'avgRating':r[3], 'numOfRatings':r[4], 'MPAA':r[5]})
+			numResults = len(movies)
+			return render_to_response('movieResults.html', locals())
+	else:
 		return render_to_response('search.html', locals())
 		   
 def edit_profile(request, user_id):
