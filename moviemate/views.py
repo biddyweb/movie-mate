@@ -193,7 +193,10 @@ def advance_search(request):
 		    
 		cursor = connection.cursor()
 		
-		if post['searchOp'] == '1':   #Movie Title Search
+		#
+		#Movie Title Search
+		#
+		if post['searchOp'] == '1':   
 			
 			row = queries.find_movie_by_title(post['title'], mpaa)
 			movies = []
@@ -201,8 +204,11 @@ def advance_search(request):
 				movies.append({'mid':r[0], 'name':r[1], 'year':r[2], 'avgRating':r[3], 'numOfRatings':r[4], 'MPAA':r[5]})
 			numResults = len(movies)
 			return render_to_response('movieResults.html', locals())
-			
-		elif post['searchOp'] == '2':  #User Search
+		
+		#
+		#User Search
+		#	
+		elif post['searchOp'] == '2':  
 			
 			row = queries.find_user(post['findUser'])
 			friends = []
@@ -211,8 +217,10 @@ def advance_search(request):
 			numResults = len(friends)
 			return render_to_response('friendResults.html', locals())
 		
-		####
-		elif post['searchOp'] == '3':  #Actor/Actress or Directors Search
+		#
+		#Actor/Actress or Directors Search
+		#
+		elif post['searchOp'] == '3':  
 			row = queries.find_person(post['findPerson'])
 			persons = []
 			for r in row:
@@ -220,29 +228,30 @@ def advance_search(request):
 			numResults = len(persons)
 			return render_to_response('personResults.html', locals())
 			
-		####
-		elif post['searchOp'] == '4':  #list of actors, actresses, or directors
-			quaryset = query.split(',')
-			
-			person = ''
-			for q in quaryset:
-				person += """p2.name = '%s' or """ % q
-			person = person.rstrip(' or ')
-			
-	   
-			cursor.execute("""SELECT DISTINCT m.mid, m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-					FROM Movie m, Genre g, isType i, isInvolved iv, Person p 
-					WHERE m.mid = iv.mid AND p.pid = iv.pid AND i.mid = m.mid AND g.gid = i.gid and m.MPAA < %s AND p.pid IN 
-					(SELECT p2.pid FROM Person p2 WHERE %s""" % mpaa, person )
-			row = cursor.fetchall()
+		#
+		# Movies with at least one of the listed actors, actresses, or directors
+		#
+		elif post['searchOp'] == '4':
+			people = [ post['person1'], post['person2'], post['person3'], post['person4'], post['person5'] ]
+					
+			personList = []
+			for p in people:
+				if p <> '':
+					personList.append(p)
+						
+			row = queries.find_all_movies_by_person_list(personList, mpaa)
 			movies = []
 			for r in row:
-				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
+				movies.append({'mid':r[0], 'name':r[1], 'year':r[2], 'avgRating':r[3], 'numOfRatings':r[4], 'MPAA':r[5]})
+			numResults = len(movies)
+			return render_to_response('movieResults.html', locals())
 		
-		####				   
-		elif post['searchOp'] == '5':  #list of actors, actresses ALL INVOLVED IN MOVIE
-			quaryset = query.split(',')
-			
+		####
+		# Movies with ALL of the listed actors, actresses, or directors
+		#			   
+		elif post['searchOp'] == '5':
+			people = [ post['person1'], post['person2'], post['person3'], post['person4'], post['person5'] ]
+						
 			person = ''
 			for q in quaryset:
 				person += """p2.name = '%s' or """ % q
@@ -258,17 +267,21 @@ def advance_search(request):
 			for r in row:
 				movies.append({'name':r[0], 'year':r[1], 'avgRating':r[2], 'numOfRatings':r[3], 'MPAA':r[4], 'genre':r[5]})
 		
-		####	
-		elif post['searchOp'] == '6':  #one director, return actors and actresses
-			cursor.execute("""SELECT p.pid, p.name, p.age, p.gender, iv.role
-					FROM Person p, Movie m, isInvolved iv
-					WHERE p.pid = iv.pid and m.mid = iv.mid and (iv.role = 'Actor' or iv.role = 'Actress') and m.MPAA < %s and m.mid IN
-						(SELECT m2.mid 
-						FROM Person p2, Movie m2, isInvolved iv2 
-						WHERE m2.mid = iv2.mid and p2.pid = iv2.pid and p2.name = '%s' and iv2.role = 'Director'""" % mpaa, query)
-		
 		####
-		elif post['searchOp'] == '7':  #Movies released in this year.
+		# Actors and Actresses that worked with a given Director
+		#	
+		elif post['searchOp'] == '6':  
+			row = queries.find_cast_for_director(post['director'])
+			persons = []
+			for r in row:
+				persons.append({'pid':r[0], 'name':r[1]})
+			numResults = len(persons)
+			return render_to_response('personResults.html', locals())
+			
+		#
+		# Movies released in year range.
+		#
+		elif post['searchOp'] == '7':
 			year1 = post['year1'];
 			year2 = post['year2'];
 			if year2 == '':
@@ -284,9 +297,10 @@ def advance_search(request):
 				movies.append({'mid':r[0], 'name':r[1], 'year':r[2], 'avgRating':r[3], 'numOfRatings':r[4], 'MPAA':r[5]})
 			numResults = len(movies)
 			return render_to_response('movieResults.html', locals())
-		
-		####
-		elif post['searchOp'] == '8':  #Movies who's rating is in a range
+		#
+		# Movies within rating range
+		#
+		elif post['searchOp'] == '8':
 			rating1 = post['rating1'];
 			rating2 = post['rating2'];
 			if rating2 == '':
@@ -306,9 +320,10 @@ def advance_search(request):
 				movies.append({'mid':r[0], 'name':r[1], 'year':r[2], 'avgRating':r[3], 'numOfRatings':r[4], 'MPAA':r[5]})
 			numResults = len(movies)
 			return render_to_response('movieResults.html', locals())
-		
-		####	
-		elif post['searchOp'] == '9':  #Top n rated movies.
+		#
+		#Top n rated movies.
+		#
+		elif post['searchOp'] == '9':
 			row = queries.top_k_search(post['value_k'], mpaa)
 			movies = []
 			for r in row:
