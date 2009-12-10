@@ -98,6 +98,7 @@ AUTHENTICATION_BACKENDS = (
     "django.contrib.auth.backends.ModelBackend",
 )
 #CUSTOM_USER_MODEL = 'moviemate.Users'
+AUTH_PROFILE_MODULE = "moviemate.Users"
 
 INSTALLED_APPS = (
     'moviemate',

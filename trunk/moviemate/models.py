@@ -185,6 +185,7 @@ class auth_user_ext(User):
             return User.username
 
 class Users(models.Model): 
+    user = models.ForeignKey(User, unique=True)
     user_id = models.IntegerField(unique=True)
     isAdmin = models.BooleanField()
     isActive = models.BooleanField()
@@ -328,3 +329,4 @@ admin.site.register(Isinvolved)
 admin.site.register(Istype)
 admin.site.register(Suppliesad)
 admin.site.register(Targetsgenre)
+admin.site.register(auth_user_ext)
