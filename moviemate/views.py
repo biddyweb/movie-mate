@@ -326,7 +326,7 @@ def myLogin(request):
 		if user is not None:
 			if user.is_active:
 				login(request, user)
-				return HttpResponseRedirect('/home')
+				return HttpResponseRedirect('/home/')
 			else: #inactive account
 				error = "This account has been disabled."
 				return render_to_response('welcome.html', locals())
@@ -349,4 +349,5 @@ def welcome(request):
 		return render_to_response('welcome.html', locals())
 	
 def home(request):
+	db_user = models.Users.objects.get(user_id=request.user.get_profile().db_user)
 	return render_to_response('home.html', locals())
