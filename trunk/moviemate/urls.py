@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     
     (r'^movie/(?P<mid>\d+)$', views.movie_page),
     (r'^$', views.welcome),
-    (r'^home$', views.home),
+    (r'^home/$', views.home),
     
     (r'^person/(?P<pid>\d+)$', views.person_page),
     (r'^friend/(?P<user_id>\d+)$', views.friend_page),
@@ -36,7 +36,7 @@ urlpatterns = patterns('',
     (r'^advanced/$', views.advance_search),
     
     
-    url(r'^top5$', views.ajax_top_five, name='demo_ajax_top_five'),
+    url(r'^top5/$', views.ajax_top_five, name='demo_ajax_top_five'),
     
     url(r'^review/$', views.review, name='showWriteReview'),
     

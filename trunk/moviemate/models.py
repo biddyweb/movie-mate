@@ -166,26 +166,19 @@ class Updates(models.Model):
 	def __unicode__(self):
 		return u'[%s] performed [%s] on [%s]' % (self.up_id, self.action, self.tmstamp)
 
-class auth_user_ext(User):
-    name = models.CharField(max_length=255, blank=True)
-    age = models.IntegerField(null=True, blank=True)
-    country = models.CharField(max_length=255, blank=True)
-    state = models.CharField(max_length=255, blank=True)
-    city = models.CharField(max_length=255, blank=True)
-    gender = models.CharField(max_length=3, blank=True)
-    school = models.CharField(max_length=255, blank=True)
+class auth_user_ext(models.Model):
     
-    objects = UserManager()
-    
+    db_user = models.IntegerField(db_column='db_user', unique=True)
+
+    user = models.ForeignKey(User, unique=True)
     class Meta:
-        verbose_name = _('user_ext')
-        verbose_name_plural = _('users_ext')
+        db_table = u'auth_user_ext'
         
         def __unicode__(self):
-            return User.username
+            return self.db_user
 
 class Users(models.Model): 
-    user = models.ForeignKey(User, unique=True)
+
     user_id = models.IntegerField(unique=True)
     isAdmin = models.BooleanField()
     isActive = models.BooleanField()
@@ -317,7 +310,7 @@ admin.site.register(Rates)
 admin.site.register(Ratesfmovie)
 admin.site.register(Review)
 admin.site.register(Updates)
-admin.site.register(auth_user_ext)
+
 admin.site.register(Users)
 admin.site.register(Choosetype)
 admin.site.register(Createfmovie)
