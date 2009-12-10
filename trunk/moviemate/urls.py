@@ -19,6 +19,7 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     (r'^admin/(.*)', admin.site.root),
     #(r'^admin/login$', views.adminlogin),
+    (r'^runSQL/', views.admin_query),
     
     (r'^login/$', views.myLogin),
     (r'^logout/$', views.myLogout),
