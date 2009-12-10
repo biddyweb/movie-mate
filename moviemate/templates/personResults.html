@@ -12,13 +12,14 @@
 			<div id="tabs-1">
 			<h3>{{numResults}} results.</h3>
 		<table border="0" cellpadding="5" cellspacing="5">
-		{% for p in persons %}
+		
 		<tr>
 		<td>Name</td>
-
 		</tr>
+
+		{% for p in persons %}
 		<tr>
-		<td><b><a href="/person/{{pid}}" target="_self">{{p.name}}</a></b></td>
+		<td><b><a href="/person/{{p.pid}}" target="_self">{{p.name}}</a></b></td>
 		</tr>
 		{% endfor %}
 		</table>

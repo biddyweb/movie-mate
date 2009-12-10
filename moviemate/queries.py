@@ -71,9 +71,9 @@ def find_movie_by_year(year1, year2=None, mpaa=None):
     cursor = connection.cursor()
     query = 'SELECT * FROM Movie m WHERE m.year '
     if year2 == None:
-        query += '= %s' % (year1)
+        query += '= \'%s\'' % (year1)
     else:
-        query += '>= %s AND m.year <= %s' % (year1, year2)
+        query += '>= \'%s\' AND m.year <= \'%s\'' % (year1, year2)
     
     if mpaa <> None:
         query += ' AND m.MPAA < %s;' % (mpaa)
@@ -128,6 +128,13 @@ def top_k_search(value_k, mpaa=None):
 def find_user(name):
     cursor = connection.cursor()
     cursor.execute("""SELECT u.user_id, u.login, u.name FROM Users u WHERE u.login LIKE '%s%%%%' or u.name LIKE '%s%%%%';""" % (name, name))
+    row = cursor.fetchall()
+    cursor.close()
+    return row
+
+def find_person(name):
+    cursor = connection.cursor()
+    cursor.execute("""SELECT p.pid, p.name FROM Person p WHERE p.name LIKE '%s%%%%';""" % (name))
     row = cursor.fetchall()
     cursor.close()
     return row
