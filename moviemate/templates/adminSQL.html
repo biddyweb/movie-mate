@@ -1,0 +1,43 @@
+{% extends 'index.html' %}
+
+{% block title %} Admin {% endblock %}
+{% block content %}
+
+<!-- Tabs -->
+		<div id="tabs">
+			<ul>
+				<li><a href="#tabs-1">Welcome!</a></li>
+
+			</ul>
+			
+			<div id="tabs-1">
+				<table border="0" cellpadding="1" cellspacing="1">
+					<form action='/runSQL/' method="POST">
+					<tr align="center" colspan="2"><center><h3>Welcome Administrator!</h3></center></tr>
+					<tr align="center" colspan="2"><center>Run a SQL Query in the space provided below:</center></tr>
+					<tr>
+			
+						<td><center><textarea name="adminSQL" cols="75" rows="5">{{query}}</textarea></center></td>
+					</tr>
+					<tr>
+						<td colspan="2"><center><input type="submit" class="showLogin" value="Submit" /></center><BR><BR></td>
+					</tr>
+					</form>
+				</table>
+			</div>
+		
+			<div id="login">
+				<hr>
+				<BR>
+				Found {{count}} results.<br><br>
+				{% for r in result %}
+					{% for r2 in r %}
+						{{r2}} &nbsp;
+					{% endfor %}
+					<br>
+				{% endfor %}
+				<BR><BR>
+			</div>
+			
+		</div>
+{% endblock %}

@@ -180,6 +180,10 @@ def find_person(name):
     return row
  
 def sql_query(query):
+    query.replace('%', '%%')
+    #query.replace('\r\n', ' ')
+    query = " ".join(query.splitlines())
+    print query
     cursor = connection.cursor()
     cursor.execute("""%s""" % query)
     transaction.commit_unless_managed()
