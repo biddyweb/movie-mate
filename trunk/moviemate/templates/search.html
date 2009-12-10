@@ -39,27 +39,31 @@
 			<form action="" method="POST">
 			<table border="0" cellpadding="5" cellspacing="5">
 				<tr>
-					<td>Movies with the following actors, actresses, or directors:</td>
-					<td><input type="radio" name="searchOp" value="4" checked></td>
-
-					<td><i>Separate actors, actresses, and directors by commas.</i></td>
+					<td colspan="2">
+					<table border="0" cellpadding="5" cellspacing="0">
+						<tr><td>Movies with the following actors, actresses, or directors:</td>
+							<td><input type="radio" name="searchOp" value="4" checked></td>
+						</tr>
+						<tr><td>Movies with the following actors or actresses ONLY:</td>
+							<td><input type="radio" name="searchOp" value="5" name="query"></td>
+						</tr>
+					</td>
+					</table>
+					<td colspan="2">
+					<table border="0" cellpadding="1" cellspacing="1">
+						<tr><td colspan="2"><i>Limit 5 entries.</i></td></tr>
+						<tr><td colspan="2"><input type="text" name="person1"></input></td></tr>
+						<tr><td colspan="2"><input type="text" name="person2"></input></td></tr>
+						<tr><td colspan="2"><input type="text" name="person3"></input></td></tr>
+						<tr><td colspan="2"><input type="text" name="person4"></input></td></tr>
+						<tr><td colspan="2"><input type="text" name="person5"></input></td></tr>
+					</table>
+					</td>
 				</tr>
 				<tr>
-					<td colspan="3"><textarea name="all actors" cols="75" rows="5" name="query"></textarea></td>
-				</tr>
-				<tr>
-					<td>Movies with the following actors or actresses ONLY:</td>
-					<td><input type="radio" name="searchOp" value="5" name="query"></td>
-
-					<td><i>Separate actors and actresses by commas.</i></td>
-				</tr>
-				<tr>
-					<td colspan="3"><textarea name="all actors" cols="75" rows="5" name="query"></textarea></td>
-				</tr>
-				<tr>
-					<td>Display actors or actresses who have worked with the following director</td>
+					<td>Actors and Actresses who have worked with the following Director</td>
 					<td><input type="radio" name="searchOp" value="6"></td>
-					<td><input type="text" name="query"></input></td>
+					<td><input type="text" name="director"></input></td>
 					<td><input type="submit" value="Search"></td>
 				
 				</tr>

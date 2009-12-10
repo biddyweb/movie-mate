@@ -85,15 +85,16 @@ def find_movie_by_year(year1, year2=None, mpaa=None):
     cursor.close()
     return row
 
-def find_all_movie_by_person_list(peopleList, mpaa=None):
+def find_all_movies_by_person_list(peopleList, mpaa=None):
     cursor = connection.cursor()
     query = 'SELECT * FROM Movie m, isInvolved iv, Person p WHERE m.mid = iv.mid AND p.pid = iv.pid AND ('
     for person in peopleList:
-        query += ' p.name LIKE \'%s%%%%\' or ' % (person)
+        if person <> None:
+            query += ' p.name LIKE \'%s%%%%\' or ' % (person)
     query = query.rstrip(' or ')
     query += ')'
     if mpaa <> None:
-        query += ' AND m.MPAA < 7;'
+        query += ' AND m.MPAA < %s;' % (mpaa)
     else:
         query += ';' 
     cursor.execute("""%s""" % query)
@@ -104,11 +105,25 @@ def find_all_movie_by_person_list(peopleList, mpaa=None):
 ## NOT DONE
 def find_movie_by_all_persons(peopleList, mpaa=None):
     cursor = connection.cursor()
-    subquery = 'SELECT iv.mid FROM isInvolved iv, Person p WHERE p.pid = iv.pid AND p.name = '
+    subquery = '(SELECT iv1.mid FROM Person p1, isInvolved iv1 WHERE p1.pid = iv1.pid and p1.name LIKE \'%s%%%%\')' % p1
+    
     
     for person in peopleList:
         query[count] = subquery + '%s%%%%' % person
     
+    cursor.execute("""%s""" % query)
+    row = cursor.fetchall()
+    cursor.close()
+    return row
+
+def find_cast_for_director(director, mpaa=None):
+    cursor = connection.cursor()
+    subquery = '(SELECT iv.mid FROM Person p, isInvolved iv WHERE iv.pid = p.pid AND p.name LIKE \'%s%%%%\' AND iv.role = \'Director\')' % director
+    query = 'SELECT DISTINCT iv2.pid, p.name FROM %s as m, isInvolved iv2, Person p WHERE m.mid = iv2.mid and iv2.pid = p.pid and iv2.role <> \'Director\'' % subquery
+    if mpaa <> None:
+        query += ' AND m.MPAA < %s;' % (mpaa)
+    else:
+        query += ';'
     cursor.execute("""%s""" % query)
     row = cursor.fetchall()
     cursor.close()
