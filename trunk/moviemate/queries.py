@@ -1,43 +1,56 @@
 from django.db import connection, transaction
 import datetime
 
-cursor = connection.cursor()
-
 def add_review(user_id, mid, summary):
+    cursor = connection.cursor()
     cursor.execute("""INSERT INTO Review VALUES('%s', '%s', '%s', '%s');""" % (user_id, mid, summary, datetime.datetime.now()))
     transaction.commit_unless_managed()
+    cursor.close()
 
 def change_rating(user_id, mid, rating):
+    cursor = connection.cursor()
     cursor.execute("""UPDATE Rates SET rating = %s WHERE user_id = %s AND mid = %s;""" % (rating, user_id, mid))
     transaction.commit_unless_managed()
+    cursor.close()
 
 def likes_movie(user_id, mid):
+    cursor = connection.cursor()
     cursor.execute("""INSERT INTO LikesMovie VALUES('%s', '%s');""" % (user_id, mid))
     transaction.commit_unless_managed()
+    cursor.close()
     
 def not_likes_movie(user_id, mid):
+    cursor = connection.cursor()
     cursor.execute("""DELETE FROM LikesMovie WHERE user_id = %s AND mid = %s;""" % (user_id, mid))
     transaction.commit_unless_managed()
+    cursor.close()
 
 def add_friend(user_id1, user_id2):
+    cursor = connection.cursor()
     cursor.execute("""INSERT INTO isFriend VALUES('%s', '%s');""" % (user_id1, user_id2))
     transaction.commit_unless_managed()
+    cursor.close()
 
 def remove_friend(user_id1, user_id2):
+    cursor = connection.cursor()
     cursor.execute("""DELETE FROM isFriend WHERE uid1 = %s AND uid2 = %s;""" % (user_id1, user_id2))
     transaction.commit_unless_managed()
+    cursor.close()
 
 def find_movie_by_title(title, mpaa=None):
+    cursor = connection.cursor()
     query = "SELECT m.mid, m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA FROM Movie m WHERE m.name LIKE '%s%%%%'" % (title)
     if mpaa <> None:
         query += ' and m.MPAA < %s;' % (mpaa)
     else:
         query += ';'
-    cursor.execute("""%s""" % (query))
+    cursor.execute("%s" % query)
     row = cursor.fetchall()
+    cursor.close()
     return row
 
 def find_movie_by_rating(rating1, rating2=None, mpaa=None):
+    cursor = connection.cursor()
     query = 'SELECT * FROM Movie m WHERE m.avgRating '
     if rating2 == None:
         query += '= %s' % (rating1)
@@ -50,9 +63,12 @@ def find_movie_by_rating(rating1, rating2=None, mpaa=None):
         query += ';'
     
     cursor.execute("""%s""" % query)
-    return cursor.fetchall()
+    row = cursor.fetchall()
+    cursor.close()
+    return row
 
 def find_movie_by_year(year1, year2=None, mpaa=None):
+    cursor = connection.cursor()
     query = 'SELECT * FROM Movie m WHERE m.year '
     if year2 == None:
         query += '= %s' % (year1)
@@ -65,9 +81,12 @@ def find_movie_by_year(year1, year2=None, mpaa=None):
         query += ';'
     
     cursor.execute("""%s""" % (query))
-    return cursor.fetchall()
+    row = cursor.fetchall()
+    cursor.close()
+    return row
 
 def find_all_movie_by_person_list(peopleList, mpaa=None):
+    cursor = connection.cursor()
     query = 'SELECT * FROM Movie m, isInvolved iv, Person p WHERE m.mid = iv.mid AND p.pid = iv.pid AND ('
     for person in peopleList:
         query += ' p.name LIKE \'%s%%%%\' or ' % (person)
@@ -78,31 +97,45 @@ def find_all_movie_by_person_list(peopleList, mpaa=None):
     else:
         query += ';' 
     cursor.execute("""%s""" % query)
-    return cursor.fetchall()
+    row = cursor.fetchall()
+    cursor.close()
+    return row
 
 ## NOT DONE
 def find_movie_by_all_persons(peopleList, mpaa=None):
+    cursor = connection.cursor()
     subquery = 'SELECT iv.mid FROM isInvolved iv, Person p WHERE p.pid = iv.pid AND p.name = '
     
     for person in peopleList:
         query[count] = subquery + '%s%%%%' % person
     
     cursor.execute("""%s""" % query)
-    return cursor.fetchall()
+    row = cursor.fetchall()
+    cursor.close()
+    return row
         
 def top_k_search(value_k, mpaa=None):
+    cursor = connection.cursor()
     query = 'SELECT * FROM Movie m '
     if mpaa <> None:
         query += 'WHERE m.MPAA < %s ' % (mpaa)
     query += 'ORDER BY m.avgRating DESC, m.numOfRatings DESC LIMIT %s;' % (value_k)
     cursor.execute("""%s""" % query)
-    return cursor.fetchall()
+    row = cursor.fetchall()
+    cursor.close()
+    return row
 
 def find_user(name):
+    cursor = connection.cursor()
     cursor.execute("""SELECT u.user_id, u.login, u.name FROM Users u WHERE u.login LIKE '%s%%%%' or u.name LIKE '%s%%%%';""" % (name, name))
-    return cursor.fetchall()
+    row = cursor.fetchall()
+    cursor.close()
+    return row
  
 def sql_query(query):
+    cursor = connection.cursor()
     cursor.execute("""%s""" % query)
     transaction.commit_unless_managed()
-    return cursor.fetchall()
+    row = cursor.fetchall()
+    cursor.close()
+    return row
