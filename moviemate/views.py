@@ -169,27 +169,22 @@ def basic_search(request, type, query, count=25):
 	return render_to_response('testresults.html', locals())
 
 def advance_search(request):
-	#print request.POST
-	#user, radio_btn, query, gt, lt = "", "", "", "", ""
+
 	user = request.user
 
 	if request.POST:
-		
-		post = request.POST
-		
-		#print request.POST
-		
-		#if user.is_authenticated():
+		post = request.POST		
+		if user.is_authenticated():
+			mpaa = 7
 		#	if user.age < 13:
 		#		mpaa = 2
 		#	if user.age < 14:
 		#		mpaa = 3
 		#	elif user.age < 18:
 		#		mpaa = 4		
-		#else:
-		#    mpaa = 7
-		
-		mpaa = 7
+		else:
+		    mpaa = 3
+		    
 		cursor = connection.cursor()
 		
 		if post['searchOp'] == '1':   #Movie Title Search
@@ -202,13 +197,12 @@ def advance_search(request):
 			return render_to_response('movieResults.html', locals())
 			
 		elif radio_btn == 2:  #User Search
-			cursor.execute("""select u.user_id, u.username, u.name, u.age, u.state, u.city
-					from Users u where u.username LIKE '%%s%' or u.name LIKE '%%s%'""" % query)
 			
-			row = cursor.fetchall()
-			user = []
+			row = queries.find_user(post['findUser'], mpaa)
+			friends = []
 			for r in row:
-				user.append({'username':r[0], 'name':r[1],'age':r[1], 'state':r[1], 'city':r[2]})
+				friends.append({'user_id':r[0], 'login':r[1], 'name':r[2]})
+			return render_to_response('friendResults.html', locals())
 			
 		elif radio_btn == 3:  #Actor/Actress or Directors Search
 			cursor.execute("""select p.pid, p.name, p.age, p.gender
