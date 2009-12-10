@@ -99,7 +99,7 @@ def top_k_search(value_k, mpaa=None):
     return cursor.fetchall()
 
 def find_user(name):
-    cursor.execute("""SELECT * FROM Users u WHERE u.login LIKE '%s%%%%' or u.name LIKE '%s%%%%';""" % (name, name))
+    cursor.execute("""SELECT u.user_id, u.login, u.name FROM Users u WHERE u.login LIKE '%s%%%%' or u.name LIKE '%s%%%%';""" % (name, name))
     return cursor.fetchall()
  
 def sql_query(query):
