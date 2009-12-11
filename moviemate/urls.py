@@ -38,6 +38,8 @@ urlpatterns = patterns('',
     
     
     url(r'^top5/$', views.ajax_top_five, name='demo_ajax_top_five'),
+    (r'^ajax_rate/$', views.ajax_rate),
+    
     
     url(r'^review/$', views.review, name='showWriteReview'),
     
