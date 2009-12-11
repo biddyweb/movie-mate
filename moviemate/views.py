@@ -411,8 +411,10 @@ def ajax_rate(request):
 		mid = request.POST['mid']
 		prevRating = queries.get_rating(user_id, mid)
 		try:
-			if prevRating['rating'] <> rating:
+			if rating <> prevRating[0]:
 				queries.change_rating(user_id, mid, rating)
+			else:
+				return False
 		except:
 			queries.add_rating(user_id, mid, rating)
-			
+	return True

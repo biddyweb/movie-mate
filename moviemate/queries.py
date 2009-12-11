@@ -26,7 +26,7 @@ def get_reviews(mid):
 
 def change_rating(user_id, mid, rating):
     cursor = connection.cursor()
-    cursor.execute("""UPDATE Rates SET rating = %s WHERE user_id = %s AND mid = %s;""" % (rating, user_id, mid))
+    cursor.execute("""UPDATE Rates SET rating = '%s' WHERE user_id = '%s' AND mid = '%s';""" % (rating, user_id, mid))
     transaction.commit_unless_managed()
     cursor.close()
     
