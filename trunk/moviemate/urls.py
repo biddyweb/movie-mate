@@ -24,7 +24,7 @@ urlpatterns = patterns('',
     (r'^login/$', views.myLogin),
     (r'^logout/$', views.myLogout),
     
-    (r'^movie/(?P<mid>\d+)$', views.movie_page),
+    (r'^movie/(?P<mid>\d+)/$', views.movie_page),
     (r'^$', views.welcome),
     (r'^home/$', views.home),
     

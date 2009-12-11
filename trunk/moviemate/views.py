@@ -34,40 +34,43 @@ def get_movie_info(mid):
 		pass
 
 
-def movie_page(request, mid):
+def movie_page(request, mid=None):
 	if mid == None:
 		movie = models.Movie.objects.filter(name=request.name, year=request.year).values()
-	else:
+	else:	
+		if request.method == 'POST':
+			db_user = models.Users.objects.get(user_id=request.user.get_profile().db_user)
+			review = request.POST['review']
+			if mid == None:
+				print review + ' ---- ' + db_user.user_id + ' ---- ' + mid
+			if review <> '':
+				queries.add_review(db_user.user_id, mid, review)
+	
+		cursor = connection.cursor()
 		#movie = models.Movie.objects.get(mid=mid)
 		#genre = models.Istype.objects.get(mid=mid)
 		#cast = models.Isinvolved.objects.filter(mid=mid)
 		#director = models.Isinvolved.objects.filter(mid=mid, role='Director')
-		
-		cursor = connection.cursor()
-		
+					
 		#get movie info
 		#stupid hack for missing genre info
 		try:
-			cursor.execute("""select m.name, m.year, m.avgRating, 
-					m.numOfRatings, m.MPAA, g.genre
-					from Movie m, Genre g, isType i
-					where m.mid='%s' and i.mid=m.mid and g.gid = i.gid""" % mid)
+			cursor.execute("""select m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
+							  from Movie m, Genre g, isType i
+							  where m.mid='%s' and i.mid=m.mid and g.gid = i.gid""" % mid)
 			row = cursor.fetchone()
 			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4], 'genre':row[5]}
 
 		except:
 			cursor.execute("""select m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA
-					from Movie m
-					where m.mid='%s'""" % mid)
+							  from Movie m
+							  where m.mid='%s'""" % mid)
 			row = cursor.fetchone()
 			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4]}
-
-	
-	
 	
 		#get director info
 		cursor.execute("""select p.name, v.role from Person p, isInvolved v where
-				v.mid = '%s' and v.role='Director' and p.pid = v.pid""" % mid)
+						  v.mid = '%s' and v.role='Director' and p.pid = v.pid""" % mid)
 		row = cursor.fetchone()
 		try:
 			director = {'name':row[0]}
@@ -76,7 +79,7 @@ def movie_page(request, mid):
 		
 		#get cast info
 		cursor.execute("""select p.name, v.role, p.pid from Person p, isInvolved v where
-				v.mid = '%s' and v.role <> 'Director' and p.pid = v.pid""" % mid)
+						  v.mid = '%s' and v.role <> 'Director' and p.pid = v.pid""" % mid)
 		row = cursor.fetchall()
 		cast = []
 		try:
@@ -87,7 +90,7 @@ def movie_page(request, mid):
 			
 		#get reviews
 		cursor.execute("""select u.name, r.summary, r.timestamp from Users u, Review r where r.mid = '%s'
-				and u.user_id = r.user_id""" % mid)
+						  and u.user_id = r.user_id""" % mid)
 		row = cursor.fetchall()
 		reviews = []
 		
@@ -96,7 +99,7 @@ def movie_page(request, mid):
 				reviews.append({'username':r[0], 'summary':r[1], 'timestamp':r[2]})
 		except:
 			pass
-	cursor.close()
+		cursor.close()
 	return render_to_response('movie.html', locals())
 	
 	
@@ -357,13 +360,7 @@ def edit_profile(request, user_id):
 		else:
 			return render_to_response('editprofile.html', {'form': form,})
 		
-def review(request):
-	if request.method == 'POST':
-		form = myForms.ReviewForm(request.POST)
-		if(form.isValid):
-			form.save()
-	else:
-		form = myForms.ReviewForm()
+def review(request):	
 		return render_to_response('review.html', locals())
 	
 
