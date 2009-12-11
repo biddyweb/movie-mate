@@ -1,4 +1,11 @@
 <div id="userOp">
+	{% if request.user.is_staff %}
+		  <h3>Administrative Options</h3>
+		  <a href="/runSQL/"> Run SQL Statements </a>
+	{% endif %}
+	<h3>Search Options</h3>
+	<a href="/advanced/">Advanced Search</a>
+	<br></br>
 	<h3>User Options</h3>
 	<a href="">View Profile</a><br>
 	<a href="">Edit Profile</a><br>
