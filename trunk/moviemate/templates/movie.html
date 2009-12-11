@@ -8,9 +8,9 @@
 			$("#ratings").stars({
 				callback: function(ui, type, value)
 				{
-					$.post("", {rate: value}, function(data)
+					$.post("/ajax_rate/", {rate: value, mid:{{movie.mid}}}, function(data)
 					{
-						//$("#ajax_response").html(data);
+						$("#ajax_response").html(data);
 						alert("{{data.msg}}");
 					});
 				}
