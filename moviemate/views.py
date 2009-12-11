@@ -53,13 +53,17 @@ def movie_page(request, mid=None):
 			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4]}
 
 		#get rating info
-#		cursor.execute("""SELECT rating FROM Rates WHERE user_id = '%s'""" % db_user.user_id)
-#		row = cursor.fetchone()
-
-#		try:
-#			rate = row[0]
-#		except:
-#			rate = 0
+		rate = queries.get_rating(db_user.user_id, mid)
+		
+		rating = {'1':False, '2':False, '3':False, '4':False, '4':False, 
+				  '6':False, '7':False, '8':False, '9':False, '10':False}
+		
+		try:
+			rate = rate[0]
+		except:
+			rate = 0;
+			
+		rating[str(rate)] = True
 			
 		#get director info
 		cursor.execute("""select p.name, v.role from Person p, isInvolved v where
