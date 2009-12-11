@@ -405,15 +405,23 @@ def home(request):
 	
 def ajax_rate(request):
 	if request.is_ajax():
+		
 		rating = request.POST['rate']
 		user_id = request.user.get_profile().db_user
 		mid = request.POST['mid']
 		prevRating = queries.get_rating(user_id, mid)
+		data = {'mid':mid, 'rating':rating, 'user_id':user_id, 'success':''}
 		try:
 			if rating <> prevRating[0]:
 				queries.change_rating(user_id, mid, rating)
+				data['success'] = True
 			else:
-				return False
+				data['success'] = False
+				#return False
 		except:
 			queries.add_rating(user_id, mid, rating)
-	return True
+			data['success'] = True
+			#return True
+		
+		return render_to_response('movie.html', data)
+

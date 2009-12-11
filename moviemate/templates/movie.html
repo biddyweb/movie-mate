@@ -11,7 +11,7 @@
 					$.post("/ajax_rate/", {rate: value, mid:{{movie.mid}}}, function(data)
 					{
 						$("#ajax_response").html(data);
-						alert("{{data.msg}}");
+						//alert(data.success);
 					});
 				}
 			});
