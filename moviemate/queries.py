@@ -1,6 +1,15 @@
 from django.db import connection, transaction
 import datetime
 
+def get_movie_by_id(mid):
+    cursor = connection.cursor()
+    cursor.execute("""SELECT m.name, m.year, m.avgRating, m.numOfRatings, g.genre
+                      FROM Movie m, Genre g, isType i
+                      WHERE m.mid='%s' and i.mid=m.mid and g.gid = i.gid""" % mid)
+    row = cursor.fetchone()
+    cursor.close()
+    return row
+
 def add_review(user_id, mid, summary):
     cursor = connection.cursor()
     cursor.execute("""INSERT INTO Review VALUES('%s', '%s', '%s', '%s');""" % (user_id, mid, summary, datetime.datetime.now()))
@@ -27,6 +36,13 @@ def add_rating(user_id, mid, rating):
     cursor.execute("""UPDATE Movie SET numOfRatings = numOfRatings+1 WHERE mid = %s;""" % (mid))
     transaction.commit_unless_managed()
     cursor.close()
+    
+def get_rating(user_id, mid):
+    cursor = connection.cursor()
+    cursor.execute("""SELECT rating FROM Rates WHERE user_id = '%s' and mid = '%s'""" % (user_id, mid))
+    row = cursor.fetchone()
+    cursor.close()
+    return row
 
 def likes_movie(user_id, mid):
     cursor = connection.cursor()

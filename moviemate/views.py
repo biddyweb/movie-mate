@@ -22,18 +22,6 @@ def admin_query(request):
 	else:
 		return HttpResponseRedirect('/')
 
-def get_movie_info(mid):
-	try:
-		cursor.execute("""select m.name, m.year, m.avgRating, 
-				m.numOfRatings, g.genre
-				from Movie m, Genre g, isType i
-				where m.mid='%s' and i.mid=m.mid and g.gid = i.gid""" % mid)
-		row = cursor.fetchone()
-		movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'genre':row[4]}
-	except:
-		pass
-
-
 def movie_page(request, mid=None):
 	db_user = models.Users.objects.get(user_id=request.user.get_profile().db_user)
 	if request.POST:
@@ -65,24 +53,13 @@ def movie_page(request, mid=None):
 			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4]}
 
 		#get rating info
-		cursor.execute("""SELECT rating FROM Rates WHERE user_id = '%s'""" % db_user.user_id)
-		row = cursor.fetchone()
+#		cursor.execute("""SELECT rating FROM Rates WHERE user_id = '%s'""" % db_user.user_id)
+#		row = cursor.fetchone()
 
-		rating = {'rate1':False, 'rate2':False, 'rate3':False, 'rate4':False, 'rate5':False, 
-				  'rate6':False, 'rate7':False, 'rate8':False, 'rate9':False, 'rate10':False}
-		try:
-			if row[0] == 1: rating['rate1'] = True
-			elif row[0] == 2: rating['rate2'] = True
-			elif row[0] == 3: rating['rate3'] = True
-			elif row[0] == 4: rating['rate4'] = True
-			elif row[0] == 5: rating['rate5'] = True
-			elif row[0] == 6: rating['rate6'] = True
-			elif row[0] == 7: rating['rate7'] = True
-			elif row[0] == 8: rating['rate8'] = True
-			elif row[0] == 9: rating['rate9'] = True
-			elif row[0] == 10: rating['rate10'] = True
-		except:
-			rating = False
+#		try:
+#			rate = row[0]
+#		except:
+#			rate = 0
 			
 		#get director info
 		cursor.execute("""select p.name, v.role from Person p, isInvolved v where
@@ -432,3 +409,10 @@ def ajax_rate(request):
 		rating = request.POST['rate']
 		user_id = request.user.get_profile().db_user
 		mid = request.POST['mid']
+		prevRating = queries.get_rating(user_id, mid)
+		try:
+			if prevRating['rating'] <> rating:
+				queries.change_rating(user_id, mid, rating)
+		except:
+			queries.add_rating(user_id, mid, rating)
+			
