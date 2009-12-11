@@ -28,11 +28,11 @@ urlpatterns = patterns('',
     (r'^$', views.welcome),
     (r'^home/$', views.home),
     
-    (r'^person/(?P<pid>\d+)$', views.person_page),
-    (r'^friend/(?P<user_id>\d+)$', views.friend_page),
+    (r'^person/(?P<pid>\d+)/$', views.person_page),
+    (r'^friend/(?P<user_id>\d+)/$', views.friend_page),
     
     #basic search
-    (r'^search/(?P<type>(movie|person|friend))/(?P<query>.+)$', views.basic_search),
+    (r'^search/(?P<type>(movie|person|friend))/(?P<query>.+)/$', views.basic_search),
     #advanced search
     (r'^advanced/$', views.advance_search),
     
