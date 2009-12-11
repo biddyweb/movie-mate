@@ -420,5 +420,6 @@ def ajax_rate(request):
 			else:
 				return False
 		except:
+
 			queries.add_rating(user_id, mid, rating)
-	return True
+			return True
