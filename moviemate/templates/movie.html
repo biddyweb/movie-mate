@@ -5,15 +5,21 @@
 		$(function(){
 			
 			$("#ratings").children().not(":radio").hide();
+			{% if not request.user.is_authenticated %}
+			$('#ratings').stars({disabled: true });
+			{% else %}
 			$("#ratings").stars({
 				callback: function(ui, type, value)
 				{
-					$.post("", {rate: value}, function(data)
+
+					$.post("/ajax_rate/", {rate: value, mid:{{movie.mid}}}, function(data)
 					{
+						
 						$("#ajax_response").html(data);
 					});
 				}
 			});
+			{% endif %}
 			function writeReviewShow() {
 				$('#writeReview').html('').load('{% url showWriteReview %}');
 				$('#writeReview').show();
@@ -46,7 +52,12 @@
 			
 				<tr>
 					<td>
-						<form id="ratings" action="./#tabs-1" method="post">
+						{% if not request.user.is_authenticated %}
+							<br>
+							<a href="/login/">Log in</a> to add your rating!	
+							{% endif %}
+						<form id="ratings" action="$.post;" method="post">
+						
 							<input type="radio" name="rate" value="1" title="1" id="rate1" />
 							<label for="rate1">1</label><br>
 							<input type="radio" name="rate" value="2" title="2" id="rate2" />
@@ -69,10 +80,7 @@
 							<label for="rate10">10</label><br>
 							<input type="submit" value="Rate" />
 						</form>
-						{% if not request.user.is_authenticated %}
-							<br>
-							<a href="/login">Login</a> to add your rating!
-						{% endif %}
+						
 					</td>
 				</tr>
 				
