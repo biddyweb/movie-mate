@@ -27,6 +27,8 @@
 			$('#writeReview').hide();
 			$('#reviewLink').toggle(writeReviewShow,
 				function() {$('#writeReview').hide();});
+				
+			$('#table_b tbody tr').alternate({odd:'off', even:'on'});
 			
 		});
 	</script>
@@ -114,7 +116,7 @@
 		<div id="tabs-2">
 			<h3>Cast</h3>
 			
-			<table border="0">
+			<table id="table_b" border="0">
 				{% for person in cast %}
 				<tr>
 					<td><a href="/person/{{person.pid}}">{{ person.name }}</a></td>

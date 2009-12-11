@@ -4,6 +4,26 @@ html, body{
  padding:0;
  } 
  
+ .odd {
+		background-color:lightgray;
+		}
+	.even {
+		background-color:white;
+		}
+	.off {
+		background-color:#B3D1F9;
+		}
+	.on {
+		background-color:#FFFFFF;
+		}
+	.hover {
+		color:red;
+		cursor:crosshair;
+		}
+	.selected {
+		font-style:italic;
+		}
+		
  img.profileImg {height: 200px; 
  width: 200px;}
  
