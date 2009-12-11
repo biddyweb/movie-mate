@@ -20,6 +20,7 @@
 
 				$('#tabs').tabs();
 				$('#top5').html('').load('{% url demo_ajax_top_five %}');
+				$('#table_b tbody tr').alternate({odd:'off', even:'on'});
 		});
 		</script>
 		
