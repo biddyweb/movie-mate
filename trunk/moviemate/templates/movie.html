@@ -5,21 +5,15 @@
 		$(function(){
 			
 			$("#ratings").children().not(":radio").hide();
-			{% if not request.user.is_authenticated %}
-			$('#ratings').stars({disabled: true });
-			{% else %}
 			$("#ratings").stars({
 				callback: function(ui, type, value)
 				{
-
-					$.post("/ajax_rate/", {rate: value, mid:{{movie.mid}}}, function(data)
+					$.post("", {rate: value}, function(data)
 					{
-						
 						$("#ajax_response").html(data);
 					});
 				}
 			});
-			{% endif %}
 			function writeReviewShow() {
 				$('#writeReview').html('').load('{% url showWriteReview %}');
 				$('#writeReview').show();
@@ -53,35 +47,33 @@
 			
 				<tr>
 					<td>
-						{% if not request.user.is_authenticated %}
-							<br>
-							<a href="/login/">Log in</a> to add your rating!	
-							{% endif %}
-						<form id="ratings" action="$.post;" method="post">
-						
-							<input type="radio" name="rate" value="1" title="1" id="rate1" />
+						<form id="ratings" action="./#tabs-1" method="post">
+							<input type="radio" name="rate" value="1" title="1" id="rate1" {% if rating.1 %}checked{% endif %}/>
 							<label for="rate1">1</label><br>
-							<input type="radio" name="rate" value="2" title="2" id="rate2" />
+							<input type="radio" name="rate" value="2" title="2" id="rate2" {% if rating.2 %}checked{% endif %}/>
 							<label for="rate2">2</label><br>
-							<input type="radio" name="rate" value="3" title="3" id="rate3" />
+							<input type="radio" name="rate" value="3" title="3" id="rate3" {% if rating.3 %}checked{% endif %}/>
 							<label for="rate3">3</label><br>
-							<input type="radio" name="rate" value="4" title="4" id="rate4" />
+							<input type="radio" name="rate" value="4" title="4" id="rate4" {% if rating.4 %}checked{% endif %}/>
 							<label for="rate4">4</label><br>
-							<input type="radio" name="rate" value="5" title="5" id="rate5" />
+							<input type="radio" name="rate" value="5" title="5" id="rate5" {% if rating.5 %}checked{% endif %}/>
 							<label for="rate5">5</label><br>
-							<input type="radio" name="rate" value="6" title="6" id="rate6" />
+							<input type="radio" name="rate" value="6" title="6" id="rate6" {% if rating.6 %}checked{% endif %}/>
 							<label for="rate6">6</label><br>
-							<input type="radio" name="rate" value="7" title="7" id="rate7" />
+							<input type="radio" name="rate" value="7" title="7" id="rate7" {% if rating.7 %}checked{% endif %}/>
 							<label for="rate7">7</label><br>
-							<input type="radio" name="rate" value="8" title="8" id="rate8" />
+							<input type="radio" name="rate" value="8" title="8" id="rate8" {% if rating.8 %}checked{% endif %}/>
 							<label for="rate8">8</label><br>
-							<input type="radio" name="rate" value="9" title="9" id="rate9" />
+							<input type="radio" name="rate" value="9" title="9" id="rate9" {% if rating.9 %}checked{% endif %}/>
 							<label for="rate9">9</label><br>
-							<input type="radio" name="rate" value="10" title="10" id="rate10" />
+							<input type="radio" name="rate" value="10" title="10" id="rate10" {% if rating.10 %}checked{% endif %}/>
 							<label for="rate10">10</label><br>
 							<input type="submit" value="Rate" />
 						</form>
-						
+						{% if not request.user.is_authenticated %}
+							<br>
+							<a href="/login">Login</a> to add your rating!
+						{% endif %}
 					</td>
 				</tr>
 				
