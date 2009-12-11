@@ -6,10 +6,25 @@ def add_review(user_id, mid, summary):
     cursor.execute("""INSERT INTO Review VALUES('%s', '%s', '%s', '%s');""" % (user_id, mid, summary, datetime.datetime.now()))
     transaction.commit_unless_managed()
     cursor.close()
+    
+def get_reviews(mid):
+    cursor = connection.cursor()
+    cursor.execute("""SELECT u.name, r.summary, r.timestamp FROM Users u, Review r WHERE r.mid = '%s'
+                          and u.user_id = r.user_id ORDER BY r.timestamp DESC""" % mid)
+    row = cursor.fetchall()
+    cursor.close()
+    return row
 
 def change_rating(user_id, mid, rating):
     cursor = connection.cursor()
     cursor.execute("""UPDATE Rates SET rating = %s WHERE user_id = %s AND mid = %s;""" % (rating, user_id, mid))
+    transaction.commit_unless_managed()
+    cursor.close()
+    
+def add_rating(user_id, mid, rating):
+    cursor = connection.cursor()
+    cursor.execute("""INSERT INTO Rates(user_id, mid, rating) VALUES('%s', '%s', '%s');""" % (user_id, mid, rating))
+    cursor.execute("""UPDATE Movie SET numOfRatings = numOfRatings+1 WHERE mid = %s;""" % (mid))
     transaction.commit_unless_managed()
     cursor.close()
 
