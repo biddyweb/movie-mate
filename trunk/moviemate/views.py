@@ -24,77 +24,74 @@ def admin_query(request):
 
 def movie_page(request, mid=None):
 	db_user = models.Users.objects.get(user_id=request.user.get_profile().db_user)
-	if request.POST:
-		print request.POST
-	else:	
-		if request.method == 'POST':
-			try:
-				review = request.POST['review']
-			except:
-				review = ''
-			if review <> '' and len(review) > 2:
-				queries.add_review(db_user.user_id, mid, review)
+	if request.method == 'POST':
+		try:
+			review = request.POST['review']
+		except:
+			review = ''
+		if review <> '' and len(review) > 2:
+			queries.add_review(db_user.user_id, mid, review)
 	
-		cursor = connection.cursor()
-		#movie = models.Movie.objects.get(mid=mid)
-		#genre = models.Istype.objects.get(mid=mid)
-		#cast = models.Isinvolved.objects.filter(mid=mid)
-		#director = models.Isinvolved.objects.filter(mid=mid, role='Director')
+	cursor = connection.cursor()
+	#movie = models.Movie.objects.get(mid=mid)
+	#genre = models.Istype.objects.get(mid=mid)
+	#cast = models.Isinvolved.objects.filter(mid=mid)
+	#director = models.Isinvolved.objects.filter(mid=mid, role='Director')
 					
-		#get movie info
-		#stupid hack for missing genre info
-		cursor.execute("""select m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
-						  from Movie m, Genre g, isType i
-						  where m.mid='%s' and i.mid=m.mid and g.gid = i.gid""" % mid)
-		row = cursor.fetchone()
-		try:
-			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4], 'genre':row[5]}
-		except:
-			movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4]}
+	#get movie info
+	#stupid hack for missing genre info
+	cursor.execute("""select m.name, m.year, m.avgRating, m.numOfRatings, m.MPAA, g.genre
+					  from Movie m, Genre g, isType i
+					  where m.mid='%s' and i.mid=m.mid and g.gid = i.gid""" % mid)
+	row = cursor.fetchone()
+	try:
+		movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4], 'genre':row[5]}
+	except:
+		movie = {'mid':mid, 'name':row[0], 'year':row[1], 'avgrating':row[2], 'numofratings':row[3], 'MPAA':row[4]}
 
-		#get rating info
-		rate = queries.get_rating(db_user.user_id, mid)
+	#get rating info
+	rate = queries.get_rating(db_user.user_id, mid)
 		
-		rating = {'1':False, '2':False, '3':False, '4':False, '4':False, 
-				  '6':False, '7':False, '8':False, '9':False, '10':False}
+	rating = {'1':False, '2':False, '3':False, '4':False, '4':False, 
+			  '6':False, '7':False, '8':False, '9':False, '10':False}
 		
-		try:
-			rate = rate[0]
-		except:
-			rate = 0;
+	try:
+		rate = rate[0]
+	except:
+		rate = 0;
 			
-		rating[str(rate)] = True
+	rating[str(rate)] = True
 			
-		#get director info
-		cursor.execute("""select p.name, v.role from Person p, isInvolved v where
+	#get director info
+	cursor.execute("""select p.name, v.role from Person p, isInvolved v where
 						  v.mid = '%s' and v.role='Director' and p.pid = v.pid""" % mid)
-		row = cursor.fetchone()
-		try:
-			director = {'name':row[0]}
-		except:
-			director = {}
+	row = cursor.fetchone()
+	try:
+		director = {'name':row[0]}
+	except:
+		director = {}
 		
-		#get cast info
-		cursor.execute("""select p.name, v.role, p.pid from Person p, isInvolved v where
-						  v.mid = '%s' and v.role <> 'Director' and p.pid = v.pid""" % mid)
-		row = cursor.fetchall()
-		cast = []
-		try:
-			for p in row:
-				cast.append({'name':p[0], 'role':p[1], 'pid':p[2]})
-		except:
-			pass
+	#get cast info
+	cursor.execute("""select p.name, v.role, p.pid from Person p, isInvolved v where
+					  v.mid = '%s' and v.role <> 'Director' and p.pid = v.pid""" % mid)
+	row = cursor.fetchall()
+	cast = []
+	try:
+		for p in row:
+			cast.append({'name':p[0], 'role':p[1], 'pid':p[2]})
+	except:
+		pass
 			
-		#get reviews
-		row = queries.get_reviews(mid)
-		reviews = []
+	#get reviews
+	row = queries.get_reviews(mid)
+	reviews = []
 		
-		try:
-			for r in row:
-				reviews.append({'username':r[0], 'summary':r[1], 'timestamp':r[2]})
-		except:
-			pass
-		cursor.close()
+	try:
+		for r in row:
+			reviews.append({'username':r[0], 'summary':r[1], 'timestamp':r[2]})
+	except:
+		pass
+	cursor.close()
 	return render_to_response('movie.html', locals())
 	
 	
@@ -357,8 +354,6 @@ def edit_profile(request, user_id):
 		
 def review(request):	
 		return render_to_response('review.html', locals())
-	
-
 	
 def ajax_top_five(request):
 	if request.is_ajax():
