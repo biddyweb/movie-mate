@@ -36,8 +36,8 @@ def get_movie_info(mid):
 
 def movie_page(request, mid=None):
 	db_user = models.Users.objects.get(user_id=request.user.get_profile().db_user)
-	if mid == None:
-		movie = models.Movie.objects.filter(name=request.name, year=request.year).values()
+	if request.POST:
+		print request.POST
 	else:	
 		if request.method == 'POST':
 			try:
@@ -408,7 +408,7 @@ def myLogin(request):
 			error = "Invalid username or password."
 			return render_to_response('welcome.html', locals())
 	else:
-		return render_to_response('login.html')
+		return render_to_response('welcome.html')
 	
 		
 def myLogout(request):
@@ -425,3 +425,10 @@ def welcome(request):
 def home(request):
 	db_user = models.Users.objects.get(user_id=request.user.get_profile().db_user)
 	return render_to_response('home.html', locals())
+	
+	
+def ajax_rate(request):
+	if request.is_ajax():
+		rating = request.POST['rate']
+		user_id = request.user.get_profile().db_user
+		mid = request.POST['mid']
